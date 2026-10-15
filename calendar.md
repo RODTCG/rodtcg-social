@@ -7,7 +7,7 @@ Cadence: one post every other day at 10:00 AM ET, max ~20/month. Mix: listing po
 | Date | Type | Content | Status |
 |---|---|---|---|
 | Oct 14 19:40 | Listing | Sylveon ex, $49.99, eBay photo | Scheduled (Metricool id 396361461) |
-| Oct 17 10:00 | Market | Mew ex FR 158/128 -91% chart (scripts/build_chart.py). REFRESH latest price range + date label before finalizing | Draft id 396514149 |
+| Oct 17 10:00 | Market | Mew ex FR 158/128 -91% chart (scripts/build_chart.py). REFRESH latest price range + date label before finalizing | Draft id 396516476 (uuid -7721943361349071842), caption starts with a "[DO NOT APPROVE YET ...]" line; remove it once numbers + image are refreshed |
 | Oct 19 10:00 | Listing carousel | Cover + Maushold 146/128 $14.99, Zapdos 133/128 $9.99, Articuno 132/128 $8.99, Morpeko 135/128 $7.99 (scripts/build_tags.py) | To do |
 | Oct 21 10:00 | Listing | Clefairy 094/088 (Perfect Order IR) $18.99, two copies | To do |
 Later (Oct 23 onward): draft new market-news and listing posts following the mix above; check cards.json for new listings.

@@ -9,3 +9,5 @@ For each post due in the next 2-3 days that is not yet a draft with current numb
 4. Commit PNGs to posts/YYYY-MM/ on main and use https://raw.githubusercontent.com/RODTCG/rodtcg-social/main/posts/YYYY-MM/<file> as media URLs.
 5. createScheduledPost: blogId 7417299, providers instagram, instagramData {type POST}, publicationDate 10:00 America/New_York, draft true. A carousel is several media URLs in order. If a draft for that date already exists, use updateScheduledPost (getScheduledPosts to find id) instead of making a duplicate.
 6. Update calendar.md and notify the owner which drafts are ready to approve in Metricool, with any sold-out/changed-price notes.
+
+Safety marker: a draft whose caption starts with "[DO NOT APPROVE YET" still has stale numbers. After refreshing values and the image, update that draft (updateScheduledPost) with the marker line removed. Never leave stale numbers without the marker.
