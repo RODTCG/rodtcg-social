@@ -13,7 +13,7 @@ d.text((70,150),"-91%",font=f("Inter-ExtraBold.otf",230),fill=PINK)
 d.text((70,420),"in the first week after release",font=f("Inter-Regular.otf",42),fill=CR)
 # chart
 x0,x1,y0,y1=90,990,700,1150
-pts=[(0,1400),(0.55,119),(1,87)]
+pts=[(0,1400),(0.55,119),(1,58)]
 def P(x,v): return (x0+x*(x1-x0), y1-(v/1400)*(y1-y0))
 for g in (0,.5,1): d.line([(x0,y1-g*(y1-y0)),(x1,y1-g*(y1-y0))],fill=(58,42,107),width=2)
 xy=[P(a,b) for a,b in pts]
@@ -22,7 +22,7 @@ for (x,y) in xy: d.ellipse([x-14,y-14,x+14,y+14],fill=CR,outline=PINK,width=5)
 lf=f("Inter-Bold.otf",34);sf=f("Inter-Regular.otf",28)
 d.text((xy[0][0]+40,xy[0][1]-20),"$1,400",font=lf,fill=CR);d.text((xy[0][0]+80,xy[0][1]+22),"launch week",font=sf,fill=LAV);d.text((xy[0][0]+40,xy[0][1]+22),"",font=sf)
 d.text((xy[1][0]+40,xy[1][1]-75),"$119",font=lf,fill=CR);d.text((xy[1][0]+40,xy[1][1]-35),"Sep 25",font=sf,fill=LAV)
-d.text((xy[2][0]-130,xy[2][1]-90),"~$62–113",font=lf,fill=CR);d.text((xy[2][0]-130,xy[2][1]-50),"Oct 14*",font=sf,fill=LAV)
+d.text((xy[2][0]-130,xy[2][1]-90),"~$56–61",font=lf,fill=CR);d.text((xy[2][0]-130,xy[2][1]-50),"Oct 15*",font=sf,fill=LAV)
 # card
 c=Image.open("assets/mew_ex_158_128.png").convert("RGBA")
 c=c.resize((300,419));
