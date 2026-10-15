@@ -7,12 +7,12 @@ Cadence: one post every other day at 10:00 AM ET, max ~20/month. Mix: listing po
 | Date | Type | Content | Status |
 |---|---|---|---|
 | Oct 14 19:40 | Listing | Sylveon ex, $49.99, eBay photo | Scheduled (Metricool id 396361461) |
-| Oct 17 10:00 | Market | Mew ex FR 158/128 -91% chart (scripts/build_chart.py). REFRESH latest price range + date label before finalizing | Draft id 396516476 (uuid -7721943361349071842), caption starts with a "[DO NOT APPROVE YET ...]" line; remove it once numbers + image are refreshed |
+| Oct 17 10:00 | Market | Mew ex FR 158/128 -91% chart, refreshed Oct 15: trackers ~$56-61 (Bill's Archive $56.10 Oct 13, Card Codex $60.77; Pokescope range $60-139 outlier) | Draft ready to approve (Metricool id 396757138, uuid -7721943361349071842), marker removed |
 | Oct 19 10:00 | Listing carousel | Cover + Maushold 146/128 $14.99, Zapdos 133/128 $9.99, Articuno 132/128 $8.99, Morpeko 135/128 $7.99 (scripts/build_tags.py) | To do |
 | Oct 21 10:00 | Listing | Clefairy 094/088 (Perfect Order IR) $18.99, two copies | To do |
 Later (Oct 23 onward): draft new market-news and listing posts following the mix above; check cards.json for new listings.
 
 ## Captions
-- Oct 17: "30th Celebration, a month in. Most chase cards have cooled since launch week. The Futuristic Rare Mew ex fell about 91% in the first week, while the Classic Collection Lugia and Charizard have held steadier. More product is still arriving through early December. Prices as of Oct 17. #pokemontcg #30thcelebration #pokemoncards #pokemonmarket #rodtcg"
+- Oct 17: "30th Celebration, a month in. Most chase cards have cooled since launch week. The Futuristic Rare Mew ex fell about 91% in the first week, while the Classic Collection Lugia and Charizard have held steadier. More product is still arriving through early December. Prices as of Oct 15; trackers vary. #pokemontcg #30thcelebration #pokemoncards #pokemonmarket #rodtcg"
 - Oct 19: "New in: 30th Celebration Illustration Rares. Swipe for prices, all Near Mint. Find them at the rodtcg eBay store or rod-tcg.com. #30thcelebration #pokemoncards #illustrationrare #pokemontcg #rodtcg"
 - Oct 21: "Clefairy 094/088, Illustration Rare from Perfect Order. Near Mint, $18.99. Two copies available. See the rodtcg eBay store or rod-tcg.com. #clefairy #perfectorder #pokemontcg #pokemoncards #illustrationrare #rodtcg"
