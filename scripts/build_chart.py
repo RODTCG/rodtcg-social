@@ -22,7 +22,7 @@ for (x,y) in xy: d.ellipse([x-14,y-14,x+14,y+14],fill=CR,outline=PINK,width=5)
 lf=f("Inter-Bold.otf",34);sf=f("Inter-Regular.otf",28)
 d.text((xy[0][0]+40,xy[0][1]-20),"$1,400",font=lf,fill=CR);d.text((xy[0][0]+80,xy[0][1]+22),"launch week",font=sf,fill=LAV);d.text((xy[0][0]+40,xy[0][1]+22),"",font=sf)
 d.text((xy[1][0]+40,xy[1][1]-75),"$119",font=lf,fill=CR);d.text((xy[1][0]+40,xy[1][1]-35),"Sep 25",font=sf,fill=LAV)
-d.text((xy[2][0]-130,xy[2][1]-90),"~$56–61",font=lf,fill=CR);d.text((xy[2][0]-130,xy[2][1]-50),"Oct 15*",font=sf,fill=LAV)
+d.text((xy[2][0]-130,xy[2][1]-90),"~$50–61",font=lf,fill=CR);d.text((xy[2][0]-130,xy[2][1]-50),"Oct 17*",font=sf,fill=LAV)
 # card
 c=Image.open("assets/mew_ex_158_128.png").convert("RGBA")
 c=c.resize((300,419));
@@ -37,4 +37,4 @@ lf2=f("Inter-Bold.otf",30);t="Mew ex FR 158/128"
 d.text((640+60+150-d.textlength(t,font=lf2)/2,540),t,font=lf2,fill=CR)
 d.text((70,1215),"*Tracker estimates vary.",font=sf,fill=LAV)
 d.text((70,1265),"ROD TCG",font=f("Inter-ExtraBold.otf",44),fill=PINK)
-im.save("out/oct17_mew_chart.png")
+im.save("out/oct17_mew_chart_v2.png")
