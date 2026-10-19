@@ -16,3 +16,5 @@ Later (Oct 23 onward): draft new market-news and listing posts following the mix
 - Oct 17: "30th Celebration, a month in. Most chase cards have cooled since launch week. The Futuristic Rare Mew ex fell about 91% in the first week, while the Classic Collection Lugia and Charizard have held steadier. More product is still arriving through early December. Prices as of Oct 15; trackers vary. #pokemontcg #30thcelebration #pokemoncards #pokemonmarket #rodtcg"
 - Oct 19: "New in: 30th Celebration Illustration Rares. Swipe for prices, all Near Mint. Find them at the rodtcg eBay store or rod-tcg.com. #30thcelebration #pokemoncards #illustrationrare #pokemontcg #rodtcg"
 - Oct 21: "Clefairy 094/088, Illustration Rare from Perfect Order. Near Mint, $18.99. Two copies available. See the rodtcg eBay store or rod-tcg.com. #clefairy #perfectorder #pokemontcg #pokemoncards #illustrationrare #rodtcg"
+
+## Oct 19 carousel refreshed Oct 19 (eBay verified): Maushold $13.99, Zapdos $9.99, Articuno $7.99, Morpeko $5.99 (lowest active copy). Images *_v2.png. Moved to 7:00 PM ET since 10 AM had passed.
