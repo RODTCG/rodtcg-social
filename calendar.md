@@ -18,3 +18,6 @@ Later (Oct 23 onward): draft new market-news and listing posts following the mix
 - Oct 21: "Clefairy 094/088, Illustration Rare from Perfect Order. Near Mint, $18.99. Two copies available. See the rodtcg eBay store or rod-tcg.com. #clefairy #perfectorder #pokemontcg #pokemoncards #illustrationrare #rodtcg"
 
 ## Oct 19 carousel refreshed Oct 19 (eBay verified): Maushold $13.99, Zapdos $9.99, Articuno $7.99, Morpeko $5.99 (lowest active copy). Images *_v2.png. Moved to 7:00 PM ET since 10 AM had passed.
+
+## Run Oct 21 (7:50 AM ET)
+Oct 21 Clefairy draft (id 399090658) NOT verified: cards.json fetch blocked (permission not answered), rodtcg's own eBay listing not found via search. Marker left in place. Oct 23 / Oct 25 posts not drafted this run (no verified listings or market refresh).
