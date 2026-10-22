@@ -21,3 +21,6 @@ Later (Oct 23 onward): draft new market-news and listing posts following the mix
 
 ## Run Oct 21 (7:50 AM ET)
 Oct 21 Clefairy draft (id 399090658) NOT verified: cards.json fetch blocked (permission not answered), rodtcg's own eBay listing not found via search. Marker left in place. Oct 23 / Oct 25 posts not drafted this run (no verified listings or market refresh).
+
+## Run Oct 22
+cards.json fetch blocked again (permission request unanswered), so no listings could be verified. Oct 21 Clefairy draft (id 399090658) is past its 10:00 slot and still carries the [DO NOT APPROVE YET] marker; delete or reschedule it in Metricool. Oct 23 and Oct 25 have no drafts: need verified listings (or a market refresh) first.
