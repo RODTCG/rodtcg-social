@@ -10,7 +10,8 @@ Cadence: one post every other day at 10:00 AM ET, max ~20/month. Mix: listing po
 | Oct 17 10:00 | Market | Mew ex FR 158/128 -91% chart, refreshed Oct 17: trackers ~$50-61 (PriceCharting $59.52, TCGIndex $60.91, CardPrice $52.32, PokemonWizard $50.35) | Scheduled (not draft) for Oct 17 13:20 ET per owner request, 10:00 slot had passed (Metricool uuid -7721943361349071842); image posts/2026-10/oct17_mew_chart_v2.png |
 | Oct 19 10:00 | Listing carousel | Cover + Maushold 146/128 $14.99, Zapdos 133/128 $9.99, Articuno 132/128 $8.99, Morpeko 135/128 $7.99 (scripts/build_tags.py) | DRAFT in Metricool (id 399090649) with [DO NOT APPROVE YET] marker: prices not re-verified Oct 18 (web fetch of eBay/cards.json blocked) |
 | Oct 21 10:00 | Listing | Clefairy 094/088 (Perfect Order IR) $18.99, two copies | DRAFT in Metricool (id 399090658) with [DO NOT APPROVE YET] marker: price/availability not re-verified Oct 18 |
-Later (Oct 23 onward): draft new market-news and listing posts following the mix above; check cards.json for new listings.
+| Oct 23 10:00 | Market | Mew ex FR 158/128 refresh: trackers ~$45.9-46.2 (TCGIndex $46.09, PokemonPriceTracker $46.01, Card Codex $45.86, PokemonWizard $46.18), vs ~$50-61 Oct 17 | DRAFT in Metricool (id 404100388), numbers current Oct 23; image posts/2026-10/oct23_mew_chart.png |
+Later (Oct 25 onward): draft new market-news and listing posts following the mix above; check cards.json for new listings.
 
 ## Captions
 - Oct 17: "30th Celebration, a month in. Most chase cards have cooled since launch week. The Futuristic Rare Mew ex fell about 91% in the first week, while the Classic Collection Lugia and Charizard have held steadier. More product is still arriving through early December. Prices as of Oct 15; trackers vary. #pokemontcg #30thcelebration #pokemoncards #pokemonmarket #rodtcg"
@@ -24,3 +25,6 @@ Oct 21 Clefairy draft (id 399090658) NOT verified: cards.json fetch blocked (per
 
 ## Run Oct 22
 cards.json fetch blocked again (permission request unanswered), so no listings could be verified. Oct 21 Clefairy draft (id 399090658) is past its 10:00 slot and still carries the [DO NOT APPROVE YET] marker; delete or reschedule it in Metricool. Oct 23 and Oct 25 have no drafts: need verified listings (or a market refresh) first.
+
+## Run Oct 23 (8:00 AM ET)
+cards.json and eBay store fetches blocked a third time (permission unanswered), so no listings verified; Oct 25 and Oct 27 have no draft. Made a market-news Mew ex draft for Oct 23 10:00 (id 404100388) from tracker pages (those fetches worked). Oct 21 Clefairy draft (id 399090658) is past its slot and still has the marker: delete it in Metricool. Needs: allow WebFetch for ebay.com and raw.githubusercontent.com/RODTCG/rod-shop, or the owner supplies current listings.
