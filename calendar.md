@@ -31,3 +31,6 @@ cards.json and eBay store fetches blocked a third time (permission unanswered), 
 
 ## Run Oct 24
 No Metricool posts exist for Oct 24-30 (no drafts for Oct 25 or Oct 27). cards.json and the eBay store fetch were blocked a fourth time (permission unanswered), and a web search found no rodtcg listings, so nothing could be verified and no drafts were made. Oct 21 Clefairy draft (id 399090658) still carries the marker and is past its slot: delete it in Metricool. Needs: allow WebFetch for ebay.com and raw.githubusercontent.com/RODTCG/rod-shop, or send current listings (name, number, price) for Oct 25 / Oct 27.
+
+## Run Oct 25
+Metricool has no posts for Oct 24-Nov 2 (no drafts for Oct 25 or Oct 27). cards.json fetch blocked a fifth time (permission unanswered), so no listings could be verified and no drafts were made. Oct 21 Clefairy draft (id 399090658) still carries the marker: delete it in Metricool. Needs: allow WebFetch for ebay.com and raw.githubusercontent.com/RODTCG/rod-shop, or send current listings (name, number, price).
