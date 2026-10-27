@@ -37,3 +37,6 @@ Metricool has no posts for Oct 24-Nov 2 (no drafts for Oct 25 or Oct 27). cards.
 
 ## Run Oct 26
 Metricool has no posts for Oct 26-Nov 5 (no drafts for Oct 27 or Oct 29). cards.json fetch blocked a sixth time (permission unanswered), so no listings could be verified and no drafts were made. Oct 21 Clefairy draft (id 399090658) may still carry the marker: delete it in Metricool. Needs: allow WebFetch for ebay.com and raw.githubusercontent.com/RODTCG/rod-shop, or send current listings (name, number, price).
+
+## Run Oct 27
+Metricool has drafts only for Oct 21 (Clefairy, id 399090658, still has the [DO NOT APPROVE YET] marker, past its slot: delete it) and Oct 23 (Mew ex). No drafts for Oct 27 or Oct 29. cards.json fetch blocked a seventh time (permission unanswered); rod-shop repo not in session scope. No listings verified, so no listing drafts. Mew ex tracker check: Card Codex $46.45, PokemonWizard $46.09, essentially flat vs the Oct 23 draft (~$46), so no new market post made. Needs: allow WebFetch for ebay.com and raw.githubusercontent.com/RODTCG/rod-shop, add rod-shop to session repos, or send current listings (name, number, price).
