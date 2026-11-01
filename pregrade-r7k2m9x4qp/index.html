@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>SlabCheck — Pre-Grade Card Checker</title>
+<style>
+:root{--bg:#0d0e10;--panel:#16171b;--panel2:#1f2126;--line:#2e3138;--text:#eceef3;--mute:#9a9fab;--acc:#f6c430;--accd:#1a1400;--red:#ff5a5f;--blue:#3b82ff;--ok:#3ddbb0;--warn:#f5b942;--bad:#ff6b6b}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{position:sticky;top:0;z-index:6;background:rgba(13,14,16,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:16px;padding:10px 16px}
+.logo{font-weight:800;font-size:18px}.logo b{color:var(--acc)}
+nav{display:flex;gap:4px;margin-left:auto}
+nav button{background:none;border:0;color:var(--mute);padding:8px 12px;border-radius:8px;font:inherit;cursor:pointer}
+nav button.on{background:var(--panel2);color:var(--text)}
+main{max-width:1180px;margin:0 auto;padding:16px}
+h1{font-size:26px;margin:8px 0 4px}h2{font-size:17px;margin:0 0 10px}
+p.sub{color:var(--mute);margin:0 0 14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
+.row{display:grid;gap:14px}.two{grid-template-columns:1fr 1fr}
+@media(max-width:700px){.two{grid-template-columns:1fr}}
+.steps{display:flex;gap:6px;overflow-x:auto;margin-bottom:12px;padding-bottom:2px}
+.steps button{flex:1 0 auto;background:var(--panel);border:1px solid var(--line);color:var(--mute);padding:9px 14px;border-radius:10px;font:inherit;font-weight:600;cursor:pointer;white-space:nowrap}
+.steps button.on{border-color:var(--acc);color:var(--acc)}
+.steps button:disabled{opacity:.4;cursor:default}
+.btn{background:var(--acc);color:var(--accd);border:0;border-radius:10px;padding:10px 16px;font:inherit;font-weight:800;cursor:pointer}
+.btn.ghost{background:var(--panel2);color:var(--text);border:1px solid var(--line);font-weight:600}
+.btn.sm{padding:6px 12px;font-size:13px}
+.btn:disabled{opacity:.4;cursor:default}
+.navbar{display:flex;justify-content:space-between;gap:10px;margin:6px 0 14px}
+.side{display:grid;gap:10px}
+.drop{border:2px dashed #3a3e47;border-radius:14px;min-height:210px;display:grid;place-items:center;text-align:center;padding:12px;color:var(--mute);position:relative;overflow:hidden;background:radial-gradient(circle at 50% 35%,#23262d,#17181c);transition:border-color .15s,background .15s}
+.drop:hover,.drop.over{border-color:var(--acc)}
+.drop .ov{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:3;font-size:0}
+.drop img{pointer-events:none;position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000}
+.drop .lbl{position:relative;z-index:1;display:grid;gap:4px;justify-items:center}
+.drop .ico{width:44px;height:44px;border-radius:50%;background:rgba(246,196,48,.14);color:var(--acc);display:grid;place-items:center;font-size:26px;font-weight:300;line-height:1}
+.drop .lbl b{color:var(--text);font-size:16px}
+.drop .lbl small{font-size:12px}
+.drop.has{border-style:solid;border-color:var(--acc)}
+.drop.has .lbl{position:absolute;left:8px;top:8px;background:rgba(0,0,0,.72);color:#fff;padding:3px 10px;border-radius:999px;justify-items:start}
+.drop.has .lbl .ico,.drop.has .lbl small{display:none}
+.drop.has .lbl b{font-size:12px}
+.pick{display:flex;gap:8px}
+.pb{position:relative;overflow:hidden;flex:1;display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:10px;padding:11px 14px;font-weight:800;font-size:14px;cursor:pointer;background:var(--panel2);border:1px solid var(--line);color:var(--text);margin:0}
+.pb.primary{background:var(--acc);border-color:var(--acc);color:var(--accd)}
+.pb.primary::before{content:"";width:16px;height:16px;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 16V4m0 0L7 9m5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 16V4m0 0L7 9m5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat}
+.pb:hover{filter:brightness(1.08)}
+.pb input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:0}
+.pb.cam{display:none}
+@media (hover:none) and (pointer:coarse){.pb.cam{display:inline-flex}}
+.note{font-size:12px;color:var(--mute);margin-top:6px}
+/* centering workspace */
+.ws{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:14px;align-items:start}
+@media(max-width:900px){.ws{grid-template-columns:1fr}}
+.tool{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.tool .sp{flex:1}
+.dot{width:20px;height:20px;border-radius:50%;display:inline-block}
+.stage{background:#000;border-radius:10px;overflow:hidden;height:min(74vh,720px)}
+.stage canvas{display:block;width:100%;height:100%;touch-action:none;cursor:crosshair}
+.zrow{display:flex;align-items:center;gap:10px;margin-top:10px}
+.zrow input[type=range]{flex:1;accent-color:var(--acc)}
+.badge{background:var(--acc);color:var(--accd);border-radius:999px;padding:3px 10px;font-weight:800;font-size:12px;white-space:nowrap}
+.chips{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+.chip{border:1.5px solid var(--acc);border-radius:999px;padding:6px 12px;display:flex;justify-content:space-between;font-weight:800;font-size:13px}
+.bars{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.cb{border-radius:8px;padding:8px 10px;display:flex;justify-content:space-between;font-weight:800;font-size:13px;border:1px solid var(--line)}
+.ptabs{display:flex;gap:6px;margin-bottom:8px}
+.ptabs button{flex:1;background:var(--panel2);border:1px solid var(--line);color:var(--mute);border-radius:8px;padding:8px;font:inherit;font-weight:700;cursor:pointer}
+.ptabs button.on{color:var(--text);border-color:var(--acc)}
+.ptabs .ic{flex:0 0 44px}
+.ptabs .ic.on{background:var(--text);color:#000}
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pn{background:var(--panel2);border-radius:10px;overflow:hidden}
+.pn canvas{width:100%;aspect-ratio:1;display:block;touch-action:none;background:#000;cursor:crosshair}
+.pn div{text-align:center;font-size:11px;font-weight:800;letter-spacing:.5px;color:var(--mute);padding:4px}
+.warnb{background:rgba(245,185,66,.12);color:var(--warn);border-radius:8px;padding:8px 10px;font-size:13px;margin-bottom:10px}
+/* condition */
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:700px){.grid4{grid-template-columns:repeat(2,1fr)}}
+.cell{background:var(--panel2);border-radius:10px;padding:8px;text-align:center}
+.cell .z{display:flex;gap:4px;justify-content:center;margin-bottom:6px}
+.cell canvas{width:48%;aspect-ratio:1;border-radius:6px;background:#000}
+.cell small{display:block;color:var(--mute);margin-bottom:4px}
+select,input[type=number],input[type=text]{width:100%;background:#0d0e10;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:8px;font:inherit}
+label{display:block;font-size:13px;color:var(--mute);margin-bottom:4px}
+.vals{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:700px){.vals{grid-template-columns:repeat(2,1fr)}}
+.rd{background:var(--panel2);border-radius:10px;padding:10px 12px}
+.rd small{color:var(--mute);display:block}.rd .v{font-size:22px;font-weight:800}
+/* report */
+.cos{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:700px){.cos{grid-template-columns:repeat(2,1fr)}}
+.co{background:var(--panel2);border:2px solid transparent;border-radius:12px;padding:12px;text-align:center;cursor:pointer}
+.co.sel{border-color:var(--acc)}
+.co small{color:var(--mute);font-weight:700;letter-spacing:.5px}
+.co .g{font-size:40px;font-weight:900;line-height:1.1;margin:4px 0 0}
+.co .l{font-size:12px;color:var(--acc);min-height:16px}
+.co .t{font-size:12px;color:var(--mute);margin-top:6px}
+.bar{height:10px;background:var(--panel2);border-radius:6px;overflow:hidden}
+.bar>div{height:100%;background:var(--acc);border-radius:6px}
+.sc{display:grid;grid-template-columns:90px 1fr 36px;gap:10px;align-items:center;margin:8px 0;font-size:14px}
+.pill{display:inline-block;padding:3px 10px;border-radius:999px;font-weight:700;font-size:13px}
+.good{background:rgba(61,219,176,.15);color:var(--ok)}.mid{background:rgba(245,185,66,.15);color:var(--warn)}.skip{background:rgba(255,107,107,.15);color:var(--bad)}
+ul.notes{margin:8px 0 0;padding-left:18px;color:var(--mute)}
+.disc{font-size:12px;color:var(--mute);margin-top:18px}
+.rep{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:20;display:grid;place-items:center;padding:16px}
+.modal>div{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;max-width:440px}
+.modal ol{padding-left:20px;color:var(--mute)}.modal li{margin:6px 0}
+.scanov{position:fixed;inset:0;z-index:30;background:rgba(8,9,11,.94);display:grid;place-items:center;padding:16px;overflow:auto}
+.scanbox{width:min(820px,100%);background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;display:grid;gap:14px}
+.scanhead{display:flex;justify-content:space-between;align-items:center;font-size:18px}
+.scanmain{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start}
+@media(max-width:700px){.scanmain{grid-template-columns:1fr;justify-items:center}}
+.scanview{position:relative;display:inline-block;border-radius:10px;overflow:hidden;background:#000;line-height:0}
+.scanview canvas{display:block;max-width:100%}
+.laser{position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,transparent,var(--acc),transparent);box-shadow:0 0 18px 4px rgba(246,196,48,.55);animation:sweep 1.8s ease-in-out infinite alternate}
+@keyframes sweep{from{top:0}to{top:calc(100% - 3px)}}
+@media(prefers-reduced-motion:reduce){.laser{animation:none;top:50%}}
+.progress{height:8px;background:var(--panel2);border-radius:6px;overflow:hidden}
+.progress>div{height:100%;width:0;background:var(--acc);transition:width .25s}
+.scanlist{list-style:none;margin:0;padding:0;display:grid;gap:7px;font-size:14px;color:var(--mute);width:100%}
+.scanlist li{display:flex;align-items:center;gap:10px}
+.scanlist i{width:16px;height:16px;border-radius:50%;border:2px solid var(--line);flex:none;box-sizing:border-box}
+.scanlist li.act{color:var(--text);font-weight:700}
+.scanlist li.act i{border-color:var(--acc);border-top-color:transparent;animation:spin .8s linear infinite}
+.scanlist li.ok{color:var(--text)}
+.scanlist li.ok i{background:var(--ok);border-color:var(--ok);position:relative}
+.scanlist li.ok i::after{content:"";position:absolute;left:3px;top:0;width:4px;height:8px;border:solid #04120d;border-width:0 2px 2px 0;transform:rotate(45deg)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.lab{font-size:13px;color:var(--mute)}
+.beta{background:rgba(255,255,255,.22);border-radius:999px;padding:1px 7px;font-size:10px;margin-left:4px}
+.gsel{display:flex;gap:6px;flex-wrap:wrap}.gsel .on{border-color:var(--acc);color:var(--acc)}
+.btn.ghost.on{border-color:var(--acc);color:var(--acc)}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">Slab<b>Check</b></div>
+  <nav><button id="nav-check" class="on">Pre-Grade</button><button id="nav-reports">My Reports</button></nav>
+</header>
+<main>
+<section id="pg">
+  <div class="steps" id="stepper"></div>
+
+  <!-- 1 upload -->
+  <div id="st1">
+    <h1>Pre-grade your card</h1>
+    <p class="sub">Upload front and back photos. Everything runs in your browser; photos are never uploaded.</p>
+    <div class="card">
+      <div class="row two">
+        <div class="side">
+          <div class="drop" id="drop-front"><input class="ov" type="file" accept="image/*" aria-label="Choose front photo"><div class="lbl"><div class="ico">＋</div><b>Front</b><small>Tap or drop a photo</small></div></div>
+          <div class="pick" id="pick-front"><label class="pb primary">Choose photo<input type="file" accept="image/*" aria-label="Choose front photo from files"></label><label class="pb cam">Take photo<input type="file" accept="image/*" capture="environment" aria-label="Take front photo"></label></div>
+        </div>
+        <div class="side">
+          <div class="drop" id="drop-back"><input class="ov" type="file" accept="image/*" aria-label="Choose back photo"><div class="lbl"><div class="ico">＋</div><b>Back <span style="font-weight:500;color:var(--mute)">(optional)</span></b><small>Tap or drop a photo</small></div></div>
+          <div class="pick" id="pick-back"><label class="pb primary">Choose photo<input type="file" accept="image/*" aria-label="Choose back photo from files"></label><label class="pb cam">Take photo<input type="file" accept="image/*" capture="environment" aria-label="Take back photo"></label></div>
+        </div>
+      </div>
+      <div class="note" id="upnote">Tips: card flat on a plain contrasting background, shot straight on in even light. Tilted or sideways photos are straightened automatically.</div>
+    </div>
+  </div>
+
+  <!-- 2 centering -->
+  <div id="st2" hidden>
+    <div class="ws">
+      <div class="card" style="margin:0">
+        <div class="tool">
+          <button class="btn ghost sm on" id="tab-front">Front</button><button class="btn ghost sm" id="tab-back" disabled>Back</button>
+          <button class="btn sm" id="guide" style="background:#1f9d6b;color:#fff">▶ Start Guide</button>
+          <button class="btn ghost sm on" id="snap" title="Snap handles to the nearest edge when you release them">Snap: on</button><button class="btn ghost sm" id="lockall">🔒 Lock all</button><span class="sp"></span><span class="dot" style="background:var(--red)" title="Outer edge"></span><span class="dot" style="background:var(--blue)" title="Inner border"></span>
+        </div>
+        <div class="warnb" id="lowconf" hidden>Detection is unsure on this photo. Check the handles against the card edge and inner border.</div>
+        <div class="stage" id="stageC"><canvas id="view"></canvas></div>
+        <div class="zrow"><b id="zlC">1.0x</b><span class="note" style="margin:0;flex:1">Scroll to zoom · drag empty space to pan · hover a handle for its lock (or double-click it)</span><button class="btn ghost sm" id="fitC">Fit</button><span class="badge" id="px">–</span></div>
+      </div>
+      <div class="card" style="margin:0">
+        <div class="chips" id="chips"></div>
+        <div class="bars"><div class="cb" id="bTB"><span>T | B</span><span id="tbv"></span></div><div class="cb" id="bLR"><span>L | R</span><span id="lrv"></span></div></div>
+        <div class="ptabs"><button class="ic on" id="vc" title="Corners">◜</button><button class="ic" id="ve" title="Edges">☰</button><button class="on" id="so">OUTER</button><button class="on" id="si">INNER</button></div>
+        <div class="pgrid" id="pgrid"></div>
+        <div style="text-align:center;margin-top:10px"><button class="btn ghost sm" id="resetall">↻ RESET ALL</button></div>
+      </div>
+    </div>
+    <p class="note" id="decnote"></p>
+  </div>
+
+  <!-- 3 corners & edges -->
+  <div id="st3" hidden>
+    <div class="card">
+      <h2>Corners</h2>
+      <p class="sub" style="margin-bottom:10px">Front on the left, back on the right. Whitening suggestions are pre-filled from the photos; confirm or change them by eye.</p>
+      <div class="grid4" id="corners"></div>
+      <h2 style="margin-top:16px">Edges</h2>
+      <div class="grid4" id="edges"></div>
+    </div>
+  </div>
+
+  <!-- 3 surface -->
+  <div id="st4" hidden>
+    <div class="card">
+      <div class="tool">
+        <button class="btn ghost sm on" id="stab-front">Front</button><button class="btn ghost sm" id="stab-back" disabled>Back</button>
+        <span class="sp"></span>
+        <button class="btn sm" id="scancard" style="background:#1f9d6b;color:#fff">⌖ Scan Card <span class="beta">BETA</span></button>
+      </div>
+      <div class="tool">
+        <span class="lab">View</span><button class="btn ghost sm on" id="vmRelief">Relief</button><button class="btn ghost sm" id="vmOrig">Original</button>
+        <span class="lab" style="margin-left:8px">Light</span><button class="btn ghost sm on" data-light="225" title="From top-left">↖</button><button class="btn ghost sm" data-light="315" title="From top-right">↗</button><button class="btn ghost sm" data-light="45" title="From bottom-right">↘</button><button class="btn ghost sm" data-light="135" title="From bottom-left">↙</button>
+        <span class="lab" style="margin-left:8px">Strength</span><button class="btn ghost sm" data-gain="1.5">Low</button><button class="btn ghost sm on" data-gain="2.5">Med</button><button class="btn ghost sm" data-gain="4.5">High</button>
+      </div>
+      <div class="tool">
+        <span class="lab">Scan sensitivity</span><button class="btn ghost sm" data-sens="0">Low</button><button class="btn ghost sm on" data-sens="1">Medium</button><button class="btn ghost sm" data-sens="2">High</button>
+        <button class="btn ghost sm on" id="ovl">Overlay on</button>
+      </div>
+      <div class="ws">
+        <div>
+          <div class="stage" id="stageS"><canvas id="sview"></canvas></div>
+          <div class="zrow"><b id="zlS">1.0x</b><span class="note" style="margin:0;flex:1">Scroll to zoom · drag to pan. Relief view shows dents, scratches and print lines as raised or sunken lines.</span><button class="btn ghost sm" id="fitS">Fit</button></div>
+        </div>
+        <div>
+          <div class="rd" style="margin-bottom:10px"><small>Scan result</small><span class="v" id="sres">–</span><div class="note" id="sdet"></div></div>
+          <div class="warnb" id="glare" hidden></div>
+          <label>Surface condition (your call)</label>
+          <select id="surfsel"></select>
+          <div class="note">Suggested from the scan. Confirm by eye under a light: look for scratches, print lines, dents and stains.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5 report -->
+  <!-- 5 value -->
+  <div id="st7" hidden>
+    <div class="card">
+      <h2>Value &amp; grading cost</h2>
+      <div class="tool"><span class="lab">Price for</span><div class="gsel" id="gsel"><button class="btn ghost sm on" data-g="PSA">PSA</button><button class="btn ghost sm" data-g="BGS">BGS</button><button class="btn ghost sm" data-g="TAG">TAG</button><button class="btn ghost sm" data-g="CGC">CGC</button></div></div>
+      <div class="note" style="margin:-2px 0 10px">Enter graded values for the selected grader. Switch graders to price each one.</div>
+      <div class="row" style="margin-bottom:12px"><div><label>Card name (optional)</label><input type="text" id="name" placeholder="e.g. Shining Celebi 106/105"></div></div>
+      <div class="vals">
+        <div><label>Raw value ($)</label><input type="number" id="vRaw" min="0" step="any" placeholder="20"></div>
+        <div><label id="lv10">Graded 10 value ($)</label><input type="number" id="v10" min="0" step="any" placeholder="120"></div>
+        <div><label id="lv9">Graded 9 value ($)</label><input type="number" id="v9" min="0" step="any" placeholder="45"></div>
+        <div><label id="lv8">Graded 8 value ($)</label><input type="number" id="v8" min="0" step="any" placeholder="25"></div>
+        <div><label id="lv7">Graded 7 or lower ($)</label><input type="number" id="v7" min="0" step="any" placeholder="raw value"></div>
+        <div><label>Grading fee per card ($)</label><input type="number" id="fee" min="0" step="any" value="25"></div>
+        <div><label>Shipping &amp; insurance per card ($)</label><input type="number" id="ship" min="0" step="any" value="5"></div>
+      </div>
+      <div class="note">Look up sold prices (eBay sold listings, 130point) and enter them. Fees vary by grader and service level, so edit to match.</div>
+    </div>
+  </div>
+
+  <!-- 6 report -->
+  <div id="st5" hidden>
+    <div class="card" id="report">
+      <h2>Predicted grades</h2>
+      <div class="cos" id="cos"></div>
+      <div class="note">Tap a grader for its odds and ROI. PSA and CGC top-tier centering comes from their published standards; BGS, TAG and lower tiers are community-sourced approximations. Pristine tiers include about 2 points of photo tolerance.</div>
+      <h3 id="dh" style="margin:16px 0 0;font-size:16px"></h3>
+      <div class="row two" style="margin-top:14px">
+        <div>
+          <div class="sc"><span>Centering</span><div class="bar"><div id="b-c"></div></div><b id="n-c"></b></div>
+          <div class="sc"><span>Corners</span><div class="bar"><div id="b-k"></div></div><b id="n-k"></b></div>
+          <div class="sc"><span>Edges</span><div class="bar"><div id="b-e"></div></div><b id="n-e"></b></div>
+          <div class="sc"><span>Surface</span><div class="bar"><div id="b-s"></div></div><b id="n-s"></b></div>
+        </div>
+        <div id="probs"></div>
+      </div>
+      <ul class="notes" id="drivers"></ul>
+      <hr style="border:0;border-top:1px solid var(--line);margin:16px 0">
+      <div id="roi"></div>
+      <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+        <button class="btn" id="save">Save report</button>
+        <button class="btn ghost" id="copy">Copy summary</button>
+        <span id="msg" class="note" style="align-self:center"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="navbar" id="navbar" hidden><button class="btn ghost" id="back">← Back</button><button class="btn" id="next">Next step →</button></div>
+</section>
+
+<section id="rp" hidden>
+  <h1>My Reports</h1>
+  <p class="sub">Saved in this browser only (summaries, not photos).</p>
+  <div class="card" id="replist"></div>
+</section>
+
+<p class="disc">SlabCheck gives an estimate from photos and image analysis. Grading companies inspect cards in hand and use their own judgment, so results are not a guarantee. Not affiliated with PSA, BGS, CGC, TAG or any grading company.</p>
+</main>
+
+<div class="scanov" id="scanov" hidden role="dialog" aria-live="polite"><div class="scanbox">
+  <div class="scanhead"><b id="scanTitle">Scanning your card</b><span id="scanPct" class="badge">0%</span></div>
+  <div class="scanmain"><div class="scanview"><canvas id="scanprev" width="10" height="10"></canvas><div class="laser"></div></div><ul class="scanlist" id="scanlist"></ul></div>
+  <div class="progress"><div id="scanbar"></div></div>
+  <div class="note" id="scanfoot">Measuring edges at three scales with two independent methods, then cross-checking. This runs on your device and nothing is uploaded.</div>
+</div></div>
+<div class="modal" id="gmodal" hidden><div>
+  <h2>How to set the guides</h2>
+  <ol><li>Drag the <b style="color:var(--red)">red</b> handles to the card's outer edge.</li><li>Drag the <b style="color:var(--blue)">blue</b> handles to the inner border (where the colored border meets the artwork frame).</li><li>Fine-tune in the zoomed corner and edge panels on the right.</li><li>Check the T | B and L | R readouts and each grader's centering grade.</li></ol>
+  <button class="btn" id="gclose">Got it</button>
+</div></div>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const LV=['Mint','Slight wear','Moderate wear','Heavy wear'],LS=[10,9,7,5];
+const SURF=['Clean: no visible flaws','Faint: 1–2 very light marks','Visible: scratches / print lines','Heavy: dents, creases or stains'];
+const CN=['Top-left','Top-right','Bottom-right','Bottom-left'],EN=['Top','Right','Bottom','Left'];
+const sides={front:null,back:null},dirty={};
+let step=1,curC='front',curS='front',view='corners',show={o:true,i:true},sens=1,ovl=true;
+
+/* ================= image processing ================= */
+function build(c){
+  const w=c.width,h=c.height,x=c.getContext('2d',{willReadFrequently:true}),d=x.getImageData(0,0,w,h).data,n=w*h,gray=new Float32Array(n),minc=new Float32Array(n);
+  for(let i=0,p=0;i<n;i+=1,p+=4){const r=d[p],g=d[p+1],b=d[p+2];gray[i]=.299*r+.587*g+.114*b;minc[i]=Math.min(r,g,b)}
+  return {c,w,h,data:d,gray,minc,b:null};
+}
+function fit(P){ // v = a + s*u with outlier rejection
+  if(P.length<8)return null;let pts=P,res=null;
+  for(let it=0;it<3;it++){
+    let su=0,sv=0,suu=0,suv=0;const n=pts.length;
+    for(const [u,v] of pts){su+=u;sv+=v;suu+=u*u;suv+=u*v}
+    const den=n*suu-su*su;if(Math.abs(den)<1e-9)return res;
+    const s=(n*suv-su*sv)/den,a=(sv-s*su)/n;res={a,s};
+    const e=P.map(([u,v])=>Math.abs(v-(a+s*u))),m=e.slice().sort((p,q)=>p-q)[e.length>>1],lim=Math.max(2,3*m);
+    const np=P.filter(([u,v])=>Math.abs(v-(a+s*u))<=lim);if(np.length<8)break;pts=np;
+  }
+  return res;
+}
+function refineEdge(getD,start,dir,span,maxIdx){
+  // scan inward from the first foreground hit; return the pixel-boundary coordinate of the strongest early step
+  const cl=i=>i<0?0:i>maxIdx?maxIdx:i,lo=-14,G=[];let mx=0;
+  for(let o=lo;o<=span;o++){const p=start+dir*o;let a=0,b=0;for(let k=1;k<=3;k++){a+=getD(cl(p+dir*k));b+=getD(cl(p-dir*k))}const g=(a-b)/3;G.push(g);if(g>mx)mx=g}
+  if(mx<6)return null;
+  for(let i=1;i<G.length-1;i++){
+    if(G[i]>=.45*mx&&G[i]>=G[i-1]&&G[i]>=G[i+1]){
+      const d1=G[i-1],d2=G[i],d3=G[i+1],den=d1-2*d2+d3,sub=Math.abs(den)>1e-6?.5*(d1-d3)/den:0; // parabolic sub-pixel
+      const p=start+dir*(lo+i)+dir*Math.max(-.5,Math.min(.5,sub));return dir>0?p+1:p;
+    }
+  }
+  return null;
+}
+function refineOuterLine(S,dist,gr,f,pts,dir,vert,len,maxIdx,Lb){
+  const w=S.w,KO=12,NL=Math.max(26,Math.round(.04*len)),n=NL+KO+1,PL=new Float64Array(n),PD=new Float64Array(n);
+  let cnt=0,sumBase=0,sumOb=0;const step=Math.max(1,Math.floor(pts.length/60));
+  for(let q=0;q<pts.length;q+=step){
+    const u=pts[q][0],base=f.a+f.s*u,i0=dir>0?Math.round(base):Math.round(base)-1;
+    for(let k=-KO;k<=NL;k++){let idx=i0+dir*k;idx=idx<0?0:idx>maxIdx?maxIdx:idx;const li=vert?u*w+idx:idx*w+u;PL[k+KO]+=gr[li];PD[k+KO]+=dist[li]}
+    cnt++;sumBase+=base;sumOb+=(dir>0?i0:i0+1)-base;
+  }
+  if(!cnt)return;for(let i=0;i<n;i++){PL[i]/=cnt;PD[i]/=cnt}
+  const base=sumBase/cnt,ob=sumOb/cnt,lim=Math.max(4,.012*len);
+  // 1) a genuine shadow band: dark, wide, darker than both the background and the card interior (checked on the averaged profile, so texture can't fake it)
+  const L=Array.from(PL.subarray(KO)),kw=Math.max(8,Math.round(.02*len));let kmin=0,m=1e9;for(let k=0;k<=kw&&k<L.length;k++)if(L[k]<m){m=L[k];kmin=k}
+  let Lc=0;for(let k=NL-4;k<=NL;k++)Lc+=L[k];Lc/=5;
+  if(m<.5*Lb&&Lc-m>45){
+    const mid=(m+Lc)/2;let ks=0;while(ks<=NL&&L[ks]>=mid)ks++;let ke=Math.max(ks,kmin);while(ke<=NL&&L[ke]<mid)ke++;
+    if(ke-ks>=Math.max(3,Math.round(.005*len))){
+      let bk=Math.max(0,ke-3),bg=-1e9;for(let k=Math.max(0,ke-3);k<=Math.min(NL-1,ke+2);k++){const g=L[k+1]-L[k];if(g>bg){bg=g;bk=k}}
+      f.a+=Math.min(lim*2,ob+dir*(bk+1));return;
+    }
+  }
+  // 2) otherwise place the edge at the outer foot (20% crossing) of the averaged background-distance step
+  let o=0;for(let i=0;i<4;i++)o+=PD[i];o/=4;let inn=0;for(let i=KO+6;i<=KO+14&&i<n;i++)inn+=PD[i];inn/=9;
+  if(inn-o<15)return;
+  const thr=o+.27*(inn-o);let kc=null;
+  for(let i=1;i<n;i++){if(PD[i]>=thr&&PD[i-1]<thr){const t=(thr-PD[i-1])/(PD[i]-PD[i-1]);kc=(i-1+t)-KO;break}}
+  if(kc===null)return;
+  const cb=(dir>0?Math.round(base):Math.round(base)-1)+dir*kc+.5;
+  const fl2=Math.max(2,.003*len);f.a+=Math.max(-fl2,Math.min(fl2,cb-base));
+}
+function detectCard(S){
+  const {w,h,data}=S,t=Math.max(4,Math.round(Math.min(w,h)*.012)),R=[],G=[],B=[];
+  const add=(x,y)=>{const p=(y*w+x)*4;R.push(data[p]);G.push(data[p+1]);B.push(data[p+2])};
+  for(let x=0;x<w;x+=4)for(let y=0;y<t;y+=2){add(x,y);add(x,h-1-y)}
+  for(let y=0;y<h;y+=4)for(let x=0;x<t;x+=2){add(x,y);add(w-1-x,y)}
+  const med=a=>{a.sort((p,q)=>p-q);return a[a.length>>1]},br=med(R),bg=med(G),bb=med(B);S.bg=[br,bg,bb];const Lb=.299*br+.587*bg+.114*bb,gr=S.gray;
+  const n=w*h,dist=new Uint8Array(n);
+  for(let i=0,p=0;i<n;i++,p+=4)dist[i]=(Math.abs(data[p]-br)+Math.abs(data[p+1]-bg)+Math.abs(data[p+2]-bb))/3;
+  const ps=[];for(let x=0;x<w;x+=4)for(let y=0;y<t;y+=2){ps.push(dist[y*w+x],dist[(h-1-y)*w+x])}
+  for(let y=0;y<h;y+=4)for(let x=0;x<t;x+=2){ps.push(dist[y*w+x],dist[y*w+w-1-x])}
+  ps.sort((p,q)=>p-q);const thr=Math.max(16,Math.min(60,ps[Math.floor(ps.length*.98)]*1.5+8));
+  const col=new Uint32Array(w),row=new Uint32Array(h);
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++)if(dist[y*w+x]>thr){col[x]++;row[y]++}
+  let x0=0;while(x0<w&&col[x0]<h*.25)x0++;let x1=w-1;while(x1>0&&col[x1]<h*.25)x1--;
+  let y0=0;while(y0<h&&row[y0]<w*.25)y0++;let y1=h-1;while(y1>0&&row[y1]<w*.25)y1--;
+  if(x1-x0<w*.25||y1-y0<h*.25)return null;
+  const run=5,L=[],Rr=[],T=[],Bt=[],bw=x1-x0,bh=y1-y0;
+  const yA=Math.round(y0+.12*bh),yB=Math.round(y1-.12*bh),xA=Math.round(x0+.12*bw),xB=Math.round(x1-.12*bw);
+  const first=(getD,from,to,dir)=>{let c=0;for(let i=from;dir>0?i<=to:i>=to;i+=dir){if(getD(i)>thr){if(++c>=run)return i-dir*(run-1)}else c=0}return -1};
+  for(let y=yA;y<=yB;y+=2){
+    const gd=i=>dist[y*w+i],lo=Math.max(0,x0-Math.round(.05*w)),hi=Math.min(w-1,x1+Math.round(.05*w));
+    const sl=first(gd,lo,hi,1),sr=first(gd,hi,lo,-1);
+    if(sl>=0){const e=refineEdge(gd,sl,1,Math.round(.06*bw),w-1);if(e!==null)L.push([y,e])}
+    if(sr>=0){const e=refineEdge(gd,sr,-1,Math.round(.06*bw),w-1);if(e!==null)Rr.push([y,e])}
+  }
+  for(let x=xA;x<=xB;x+=2){
+    const gd=i=>dist[i*w+x],lo=Math.max(0,y0-Math.round(.05*h)),hi=Math.min(h-1,y1+Math.round(.05*h));
+    const st=first(gd,lo,hi,1),sb=first(gd,hi,lo,-1);
+    if(st>=0){const e=refineEdge(gd,st,1,Math.round(.06*bh),h-1);if(e!==null)T.push([x,e])}
+    if(sb>=0){const e=refineEdge(gd,sb,-1,Math.round(.06*bh),h-1);if(e!==null)Bt.push([x,e])}
+  }
+  const fl=fit(L),fr=fit(Rr),ft=fit(T),fb=fit(Bt),ym=(y0+y1)/2,xm=(x0+x1)/2,ang=[];
+  if(fl)refineOuterLine(S,dist,gr,fl,L,1,true,bw,w-1,Lb);if(fr)refineOuterLine(S,dist,gr,fr,Rr,-1,true,bw,w-1,Lb);
+  if(ft)refineOuterLine(S,dist,gr,ft,T,1,false,bh,h-1,Lb);if(fb)refineOuterLine(S,dist,gr,fb,Bt,-1,false,bh,h-1,Lb);
+  if(ft)ang.push(Math.atan(ft.s));if(fb)ang.push(Math.atan(fb.s));if(fl)ang.push(-Math.atan(fl.s));if(fr)ang.push(-Math.atan(fr.s));
+  const angle=ang.length?ang.reduce((a,b)=>a+b,0)/ang.length*180/Math.PI:0;
+  const oL=fl?fl.a+fl.s*ym:x0,oR=fr?fr.a+fr.s*ym:x1+1,oT=ft?ft.a+ft.s*xm:y0,oB=fb?fb.a+fb.s*xm:y1+1;
+  if(oR-oL<w*.25||oB-oT<h*.25)return null;
+  return {oL,oR,oT,oB,cw:oR-oL,ch:oB-oT,angle};
+}
+function rot(c,rad,bg,swap){
+  const o=document.createElement('canvas');o.width=swap?c.height:c.width;o.height=swap?c.width:c.height;const x=o.getContext('2d');
+  x.fillStyle='rgb('+bg.map(Math.round).join(',')+')';x.fillRect(0,0,o.width,o.height);
+  x.translate(o.width/2,o.height/2);x.rotate(rad);x.drawImage(c,-c.width/2,-c.height/2);return o;
+}
+/* ---- inner border: band-averaged profiles, border-colour model + step consensus, 3 scales ---- */
+function sideCfg(o){
+  const cw=o.oR-o.oL,ch=o.oB-o.oT;
+  return {L:{vert:true,dir:1,e:o.oL,len:cw,a0:o.oT+.2*ch,a1:o.oB-.2*ch},R:{vert:true,dir:-1,e:o.oR,len:cw,a0:o.oT+.2*ch,a1:o.oB-.2*ch},
+          T:{vert:false,dir:1,e:o.oT,len:ch,a0:o.oL+.2*cw,a1:o.oR-.2*cw},B:{vert:false,dir:-1,e:o.oB,len:ch,a0:o.oL+.2*cw,a1:o.oR-.2*cw}};
+}
+const coordK=(c,k)=>c.dir>0?Math.ceil(c.e)+k:Math.floor(c.e)-k;
+function bandProfiles(S,c,K,nb){
+  const {w,h,data}=S,ce=Math.ceil(c.e),fe=Math.floor(c.e),dim=c.vert?w:h,out=[],span=c.a1-c.a0;
+  for(let b=0;b<nb;b++){
+    const a0=Math.round(c.a0+b*span/nb),a1=Math.round(c.a0+(b+1)*span/nb),n=a1-a0;if(n<1)continue;
+    const prof=new Float32Array(K*3);
+    for(let k=0;k<K;k++){
+      const p=c.dir>0?ce+k:fe-1-k;if(p<0||p>=dim){prof[k*3]=prof[k*3+1]=prof[k*3+2]=0;continue}
+      let r=0,g=0,bb=0;for(let a=a0;a<a1;a++){const i=c.vert?(a*w+p)*4:(p*w+a)*4;r+=data[i];g+=data[i+1];bb+=data[i+2]}
+      prof[k*3]=r/n;prof[k*3+1]=g/n;prof[k*3+2]=bb/n;
+    }
+    out.push(prof);
+  }
+  return out;
+}
+function stepVal(prof,k,W){let s=0;for(let ch=0;ch<3;ch++){let a=0,b=0;for(let j=1;j<=W;j++){a+=prof[(k-j)*3+ch];b+=prof[(k+j-1)*3+ch]}s+=Math.abs(a-b)/W}return s}
+function parab(vals,i){if(i<=0||i>=vals.length-1)return 0;const d1=vals[i-1],d2=vals[i],d3=vals[i+1],den=d1-2*d2+d3;return Math.abs(den)>1e-6?Math.max(-.5,Math.min(.5,.5*(d1-d3)/den)):0}
+function refineStep(prof,kc,W,K){
+  let bv=-1,bk=kc;const lo=Math.max(W,kc-W),hi=Math.min(K-W,kc+W),vals=[];
+  for(let k=lo;k<=hi;k++){const v=stepVal(prof,k,W);vals.push(v);if(v>bv){bv=v;bk=k}}
+  return bk+parab(vals,bk-lo);
+}
+function modelEdge(prof,K,W,kA,kB){
+  let mr=0,mg=0,mb=0,n=0;for(let k=kA;k<kB;k++){mr+=prof[k*3];mg+=prof[k*3+1];mb+=prof[k*3+2];n++}
+  if(n<2)return null;mr/=n;mg/=n;mb/=n;
+  const dv=[];for(let k=0;k+W<=K;k++){let r=0,g=0,b=0;for(let j=0;j<W;j++){const i=(k+j)*3;r+=prof[i];g+=prof[i+1];b+=prof[i+2]}dv.push((Math.abs(r/W-mr)+Math.abs(g/W-mg)+Math.abs(b/W-mb))/3)}
+  let md=0,c2=0;for(let k=kA;k<kB&&k<dv.length;k++){md+=dv[k];c2++}md/=c2;let sd=0;for(let k=kA;k<kB&&k<dv.length;k++)sd+=(dv[k]-md)*(dv[k]-md);sd=Math.sqrt(sd/c2);
+  const T=Math.max(22,md+4*sd+10);
+  for(let k=kB;k<dv.length-W;k++){let ok=true;for(let j=0;j<W;j++)if(dv[k+j]<=T){ok=false;break}if(ok)return refineStep(prof,k+(W>>1),W,K)}
+  return null;
+}
+function stepEdge(prof,K,W,kmin){
+  const st=new Float32Array(K);let mx=0;const k0=Math.max(W,kmin);
+  for(let k=k0;k<=K-W;k++){const v=stepVal(prof,k,W);st[k]=v;if(v>mx)mx=v}
+  for(let k=k0+1;k<K-W;k++){if(st[k]>=.5*mx&&st[k]>=st[k-1]&&st[k]>=st[k+1])return k+parab([st[k-1],st[k],st[k+1]],1)}
+  return null;
+}
+function robustMode(arr){
+  if(!arr.length)return null;const bins=new Map();for(const v of arr){const k=Math.round(v/2);bins.set(k,(bins.get(k)||0)+1)}
+  let bk=0,bc=-1;for(const [k,c] of bins){const cc=c+.5*(bins.get(k-1)||0)+.5*(bins.get(k+1)||0);if(cc>bc){bc=cc;bk=k}}
+  const near=arr.filter(v=>Math.abs(v-bk*2)<=3).sort((p,q)=>p-q);return {v:near[near.length>>1],conf:near.length/arr.length};
+}
+function innerSide(S,c){
+  const len=c.len,K=Math.round(.17*len),profs=bandProfiles(S,c,K,28),m=[],st=[];
+  for(const sc of [.004,.006,.009]){
+    const W=Math.max(3,Math.round(sc*len)),kA=Math.max(3,Math.round(.012*len)),kB=Math.max(kA+4,Math.round(.022*len));
+    for(const pr of profs){const a=modelEdge(pr,K,W,kA,kB);if(a!==null)m.push(a);const b=stepEdge(pr,K,W,Math.round(.025*len));if(b!==null)st.push(b)}
+  }
+  const M=robustMode(m),Sg=robustMode(st);let k,conf;
+  if(M&&Sg&&Math.abs(M.v-Sg.v)<=Math.max(3,.006*len)){k=(M.v*M.conf+Sg.v*Sg.conf)/(M.conf+Sg.conf);conf=Math.max(M.conf,Sg.conf)}
+  else if(M&&M.conf>=.45){k=M.v;conf=M.conf*.85}
+  else if(M&&Sg){if(M.conf>=Sg.conf){k=M.v;conf=M.conf*.8}else{k=Sg.v;conf=Sg.conf*.8}}
+  else if(M){k=M.v;conf=M.conf*.8}else if(Sg){k=Sg.v;conf=Sg.conf*.8}else{k=.045*len;conf=0}
+  return {pos:coordK(c,k),conf,M,Sg,k};
+}
+function detectBorders(S,o){
+  const cfg=sideCfg(o),r={};['L','R','T','B'].forEach(s=>r[s]=innerSide(S,cfg[s]));
+  S.dbg=r;S.conf=Math.min(r.L.conf,r.R.conf,r.T.conf,r.B.conf);S.sideConf={L:r.L.conf,R:r.R.conf,T:r.T.conf,B:r.B.conf};
+  return {oL:o.oL,oR:o.oR,oT:o.oT,oB:o.oB,iL:r.L.pos,iR:r.R.pos,iT:r.T.pos,iB:r.B.pos};
+}
+const keyOf=S=>Object.values(S.b).map(v=>v.toFixed(1)).join(',');
+
+/* ================= upload ================= */
+['front','back'].forEach(side=>{
+  const box=$('#drop-'+side);
+  $$('#drop-'+side+' input,#pick-'+side+' input').forEach(inp=>inp.onchange=()=>{if(inp.files[0])load(inp.files[0],side,box)});
+  ['dragover','dragenter'].forEach(ev=>box.addEventListener(ev,e=>{e.preventDefault();box.classList.add('over')}));
+  ['dragleave','drop'].forEach(ev=>box.addEventListener(ev,e=>{e.preventDefault();box.classList.remove('over')}));
+  box.addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/'))load(f,side,box)});
+});
+document.addEventListener('paste',e=>{const it=[...(e.clipboardData?e.clipboardData.items:[])].find(i=>i.type.startsWith('image/'));if(!it)return;const side=sides.front?'back':'front';load(it.getAsFile(),side,$('#drop-'+side))});
+function load(file,side,box){
+  const url=URL.createObjectURL(file),img=new Image();
+  img.onerror=()=>{box.querySelector('.lbl b').textContent='Could not read that image'};
+  img.onload=()=>{
+    const sc=Math.min(1,1800/Math.max(img.naturalWidth,img.naturalHeight));
+    const c=document.createElement('canvas');c.width=Math.round(img.naturalWidth*sc);c.height=Math.round(img.naturalHeight*sc);
+    c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+    const S=build(c);S.ready=false;S.note=[];sides[side]=S;
+    box.classList.add('has');let im=box.querySelector('img');if(!im){im=document.createElement('img');box.appendChild(im)}im.src=url;
+    if(side==='back')['tab-back','stab-back'].forEach(id=>$('#'+id).disabled=false);
+    Object.keys(dirty).forEach(k=>delete dirty[k]);vpC.S=null;vpS.S=null;
+    updateNav();if(step>1)goStep(step);
+  };img.src=url;
+}
+
+/* ================= scanning pipeline ================= */
+const tick=()=>new Promise(r=>setTimeout(r,30));
+const STG=['Reading pixels','Finding the card against the background','Straightening and orienting','Validating outer edges at two scales','Inner border: left side','Inner border: right side','Inner border: top','Inner border: bottom','Cross-checking geometry','Scanning the surface','Checking corners and edges','Building the relief map'];
+let scanning=false;
+function drawScanPrev(S){
+  const c=$('#scanprev'),x=c.getContext('2d'),maxH=Math.min(430,window.innerHeight*.5),k=Math.min(maxH/S.h,360/S.w);
+  c.width=Math.max(10,Math.round(S.w*k));c.height=Math.max(10,Math.round(S.h*k));x.drawImage(S.c,0,0,c.width,c.height);
+  const o=S._d;x.lineWidth=2;
+  if(o&&S.stage>=3){x.strokeStyle='#ff5a5f';x.setLineDash([6,4]);x.strokeRect(o.oL*k,o.oT*k,(o.oR-o.oL)*k,(o.oB-o.oT)*k)}
+  const r=S._inner;x.strokeStyle='#3b82ff';
+  if(o&&r){x.setLineDash([6,4]);const L=(x1,y1,x2,y2)=>{x.beginPath();x.moveTo(x1*k,y1*k);x.lineTo(x2*k,y2*k);x.stroke()};
+    if(r.L)L(r.L.pos,o.oT,r.L.pos,o.oB);if(r.R)L(r.R.pos,o.oT,r.R.pos,o.oB);if(r.T)L(o.oL,r.T.pos,o.oR,r.T.pos);if(r.B)L(o.oL,r.B.pos,o.oR,r.B.pos)}
+  x.setLineDash([]);
+}
+function halfCheck(S,d){ // independent outer-edge estimate on a half-size copy
+  const c=document.createElement('canvas');c.width=Math.round(S.w/2);c.height=Math.round(S.h/2);c.getContext('2d').drawImage(S.c,0,0,c.width,c.height);
+  const H=build(c),d2=detectCard(H);if(!d2)return 99;
+  return Math.max(Math.abs(d2.oL*2-d.oL),Math.abs(d2.oR*2-d.oR),Math.abs(d2.oT*2-d.oT),Math.abs(d2.oB*2-d.oB));
+}
+async function scanSide(side,onStage){
+  let S=sides[side],d=null,note=[],r={};
+  const stages=[
+   ()=>{S.stage=0;drawScanPrev(S)},
+   ()=>{d=detectCard(S);S.stage=1},
+   ()=>{
+     if(d&&d.cw>d.ch*1.08){S=build(rot(S.c,Math.PI/2,S.bg,true));d=detectCard(S);note.push('rotated upright')}
+     if(d&&Math.abs(d.angle)>.25&&Math.abs(d.angle)<20){const a=d.angle;S=build(rot(S.c,-a*Math.PI/180,S.bg,false));const d2=detectCard(S);if(d2)d=d2;note.push('straightened '+a.toFixed(1)+'°')}
+     S.auto=!!d;if(!d)d={oL:S.w*.04,oR:S.w*.96,oT:S.h*.04,oB:S.h*.96};S.note=note;S._d=d;S.stage=2;sides[side]=S;
+   },
+   ()=>{S.outerGap=halfCheck(S,d);S.stage=3},
+   ()=>{r.L=innerSide(S,sideCfg(d).L);S._inner=Object.assign({},r)},
+   ()=>{r.R=innerSide(S,sideCfg(d).R);S._inner=Object.assign({},r)},
+   ()=>{r.T=innerSide(S,sideCfg(d).T);S._inner=Object.assign({},r)},
+   ()=>{r.B=innerSide(S,sideCfg(d).B);S._inner=Object.assign({},r)},
+   ()=>{
+     S.b={oL:d.oL,oR:d.oR,oT:d.oT,oB:d.oB,iL:r.L.pos,iR:r.R.pos,iT:r.T.pos,iB:r.B.pos};S.b0=Object.assign({},S.b);S.lock={};
+     S.dbg=r;S.sideConf={L:r.L.conf,R:r.R.conf,T:r.T.conf,B:r.B.conf};
+     const cw=d.oR-d.oL,gap=S.outerGap/cw;S.conf=Math.min(r.L.conf,r.R.conf,r.T.conf,r.B.conf)*(gap>.008?.6:1);
+   },
+   ()=>{S.surf=surfaceScan(S,1);S.surf.sens=1;S.surf.key=keyOf(S)},
+   ()=>{S.ce={key:keyOf(S),res:analyse(S)}},
+   ()=>{ensureEmboss(S);S.ready=true}
+  ];
+  for(let i=0;i<stages.length;i++){
+    const li=$('#sg'+i);li.className='act';await tick();stages[i]();onStage(i);drawScanPrev(S);li.className='ok';await tick();
+  }
+  return S;
+}
+async function runScan(){
+  const todo=['front','back'].filter(k=>sides[k]&&!sides[k].ready);if(!todo.length)return;
+  scanning=true;const ov=$('#scanov');ov.hidden=false;const total=todo.length*STG.length;let done=0;
+  const setP=()=>{const p=Math.round(done/total*100);$('#scanbar').style.width=p+'%';$('#scanPct').textContent=p+'%'};setP();
+  try{
+    for(const side of todo){
+      $('#scanTitle').textContent='Scanning the '+side+' of your card';
+      $('#scanlist').innerHTML=STG.map((t,i)=>`<li id="sg${i}"><i></i>${t}</li>`).join('');
+      await scanSide(side,()=>{done++;setP()});
+    }
+    const notes=['front','back'].filter(k=>sides[k]&&sides[k].note&&sides[k].note.length).map(k=>k+': '+sides[k].note.join(', '));
+    $('#decnote').textContent=notes.length?'Auto-corrected — '+notes.join(' · ')+'.':'';
+  }catch(err){$('#decnote').textContent='Scan problem: '+err.message}
+  scanning=false;ov.hidden=true;
+}
+async function goStep(n){
+  if(scanning||n<1||n>6)return;
+  if(n>1){if(!sides.front)return;if(['front','back'].some(k=>sides[k]&&!sides[k].ready))await runScan()}
+  showStep(n);
+}
+
+/* ================= wizard ================= */
+const STEPS=['1 Upload','2 Centering','3 Surface','4 Corners & edges','5 Value','6 Report'],SEC=['st1','st2','st4','st3','st7','st5'];
+const stp=$('#stepper');STEPS.forEach((t,i)=>{const b=document.createElement('button');b.textContent=t;b.onclick=()=>goStep(i+1);stp.appendChild(b)});
+function updateNav(){$$('#stepper button').forEach((b,i)=>{b.disabled=i>0&&!sides.front;b.classList.toggle('on',i+1===step)});$('#navbar').hidden=!sides.front;
+  $('#back').style.visibility=step>1?'visible':'hidden';$('#next').style.visibility=step<6?'visible':'hidden';$('#next').textContent='Next step: '+(STEPS[step]||'').replace(/^\d /,'')+' →'}
+function showStep(n){
+  if(n>1&&!(sides.front&&sides.front.ready))return;step=n;SEC.forEach((id,i)=>$('#'+id).hidden=i+1!==n);updateNav();
+  if(n===2){vpC.S=null;drawMain();renderPanels();chips()}
+  if(n===3){vpS.S=null;surfaceView()}
+  if(n===4)refreshCE();
+  if(n===6)report();
+  window.scrollTo(0,0);
+}
+$('#next').onclick=()=>goStep(step+1);$('#back').onclick=()=>goStep(step-1);
+$('#guide').onclick=()=>$('#gmodal').hidden=false;$('#gclose').onclick=()=>$('#gmodal').hidden=true;
+
+/* ================= viewport (wheel zoom / pan / pinch) ================= */
+function VP(canvas,getS){
+  const v={k:1,k0:1,ox:0,oy:0,dpr:1,S:null,cv:canvas,get:getS};
+  v.visible=()=>{const r=canvas.getBoundingClientRect();return r.width>2&&r.height>2};
+  v.size=()=>{const r=canvas.getBoundingClientRect();v.dpr=window.devicePixelRatio||1;const W=Math.max(2,Math.round(r.width*v.dpr)),H=Math.max(2,Math.round(r.height*v.dpr));if(canvas.width!==W||canvas.height!==H){canvas.width=W;canvas.height=H;return true}return false};
+  v.fit=()=>{const S=v.get();if(!S||!v.visible())return;v.size();const pad=12*v.dpr;v.k0=Math.min((canvas.width-2*pad)/S.w,(canvas.height-2*pad)/S.h);v.k=v.k0;v.ox=(canvas.width-S.w*v.k)/2;v.oy=(canvas.height-S.h*v.k)/2;v.S=S};
+  v.ensure=()=>{const S=v.get();if(!S||!v.visible())return false;if(v.S!==S){v.fit()}else if(v.size()){const r=v.k/v.k0;v.fit();v.k=v.k0*r}return true};
+  v.clamp=()=>{const S=v.S,W=canvas.width,H=canvas.height,iw=S.w*v.k,ih=S.h*v.k;v.ox=iw<=W?(W-iw)/2:Math.min(0,Math.max(W-iw,v.ox));v.oy=ih<=H?(H-ih)/2:Math.min(0,Math.max(H-ih,v.oy))};
+  v.zoomAt=(px,py,f)=>{const nk=Math.max(v.k0,Math.min(v.k0*16,v.k*f)),r=nk/v.k;v.ox=px-(px-v.ox)*r;v.oy=py-(py-v.oy)*r;v.k=nk;v.clamp()};
+  v.toImg=(px,py)=>({x:(px-v.ox)/v.k,y:(py-v.oy)/v.k});
+  v.toScr=(x,y)=>({x:v.ox+x*v.k,y:v.oy+y*v.k});
+  v.evt=e=>{const r=canvas.getBoundingClientRect();return {x:(e.clientX-r.left)*canvas.width/r.width,y:(e.clientY-r.top)*canvas.height/r.height}};
+  v.zoomTxt=()=>(v.k/v.k0).toFixed(1)+'x';
+  return v;
+}
+function attachVP(v,redraw,hooks){
+  const ptrs=new Map();let mode=null,last=null,pinch=null;
+  v.cv.addEventListener('wheel',e=>{e.preventDefault();if(!v.ensure())return;const p=v.evt(e);v.zoomAt(p.x,p.y,Math.exp(-e.deltaY*(e.ctrlKey?.01:.0018)));redraw()},{passive:false});
+  v.cv.addEventListener('pointerdown',e=>{
+    if(!v.ensure())return;v.cv.setPointerCapture(e.pointerId);const p=v.evt(e);ptrs.set(e.pointerId,p);
+    if(ptrs.size===2){mode='pinch';const [a,b]=[...ptrs.values()];pinch={d:Math.hypot(a.x-b.x,a.y-b.y)||1,mx:(a.x+b.x)/2,my:(a.y+b.y)/2};hooks.cancel&&hooks.cancel();return}
+    if(hooks.down&&hooks.down(p,e)){mode='drag';e.preventDefault()}else{mode='pan';last=p}
+  });
+  v.cv.addEventListener('pointermove',e=>{
+    const p=v.evt(e);if(ptrs.has(e.pointerId))ptrs.set(e.pointerId,p);
+    if(mode==='pinch'&&ptrs.size>=2){const [a,b]=[...ptrs.values()],d=Math.hypot(a.x-b.x,a.y-b.y)||1,mx=(a.x+b.x)/2,my=(a.y+b.y)/2;v.zoomAt(mx,my,d/pinch.d);v.ox+=mx-pinch.mx;v.oy+=my-pinch.my;v.clamp();pinch={d,mx,my};redraw();return}
+    if(mode==='drag'){hooks.move&&hooks.move(p,e);return}
+    if(mode==='pan'&&last){v.ox+=p.x-last.x;v.oy+=p.y-last.y;last=p;v.clamp();redraw();return}
+    hooks.hover&&hooks.hover(p,e);
+  });
+  const end=e=>{const was=mode;ptrs.delete(e.pointerId);if(was==='drag'&&hooks.up)hooks.up();if(ptrs.size===0){mode=null;last=null}else if(ptrs.size===1&&was==='pinch'){mode='pan';last=[...ptrs.values()][0]}};
+  ['pointerup','pointercancel'].forEach(ev=>v.cv.addEventListener(ev,end));
+  v.cv.addEventListener('dblclick',e=>hooks.dbl&&hooks.dbl(v.evt(e)));
+}
+function drawLock(x,cx,cy,s,locked){
+  x.save();x.translate(cx,cy);
+  x.fillStyle=locked?'#f6c430':'rgba(20,20,24,.9)';x.strokeStyle=locked?'#1a1400':'#ffffff';x.lineWidth=Math.max(1,s*.12);
+  x.beginPath();x.arc(0,0,s,0,7);x.fill();x.stroke();
+  const c=locked?'#1a1400':'#ffffff';x.fillStyle=c;x.strokeStyle=c;x.fillRect(-s*.38,-s*.02,s*.76,s*.52);
+  x.lineWidth=s*.15;x.beginPath();if(locked)x.arc(0,-s*.02,s*.25,Math.PI,0);else x.arc(s*.25,-s*.02,s*.25,Math.PI,Math.PI*1.85);x.stroke();x.restore();
+}
+
+/* ================= centering ================= */
+const cv=$('#view');
+const VK=['oL','oR','iL','iR'],HK=['oT','oB','iT','iB'],ALLK=[...VK,...HK];
+const sig=h=>h.set+(h.xk||'')+(h.yk||'');
+let hovSig=null,selSig=null,snapOn=true;
+function setB(S,k,v){
+  if(S.lock[k])return;
+  const b=S.b,g=3,lim={oL:[0,b.iL-g],iL:[b.oL+g,b.iR-g],iR:[b.iL+g,b.oR-g],oR:[b.iR+g,S.w],oT:[0,b.iT-g],iT:[b.oT+g,b.iB-g],iB:[b.iT+g,b.oB-g],oB:[b.iB+g,S.h]}[k];
+  b[k]=Math.max(lim[0],Math.min(lim[1],v));
+}
+const keysOf=h=>[h.xk,h.yk].filter(Boolean);
+const hLocked=(S,h)=>{const ks=keysOf(h);return ks.length>0&&ks.every(k=>S.lock[k])};
+function toggleLock(S,h){const to=!hLocked(S,h);keysOf(h).forEach(k=>S.lock[k]=to)}
+function mainHandles(S){
+  const b=S.b,H=[];
+  [['o','oL','oR','oT','oB'],['i','iL','iR','iT','iB']].forEach(([set,l,r,t,bo])=>{
+    if(!show[set])return;const mx=(b[l]+b[r])/2,my=(b[t]+b[bo])/2;
+    [[l,t],[r,t],[r,bo],[l,bo]].forEach(([xk,yk])=>H.push({set,xk,yk,x:b[xk],y:b[yk]}));
+    H.push({set,xk:null,yk:t,x:mx,y:b[t]},{set,xk:null,yk:bo,x:mx,y:b[bo]},{set,xk:l,yk:null,x:b[l],y:my},{set,xk:r,yk:null,x:b[r],y:my});
+  });return H;
+}
+function stepAt(S,vert,a,p,win){const w=S.w,data=S.data;let d=0;for(let ch=0;ch<3;ch++){let s1=0,s2=0;for(let k=1;k<=win;k++){const i1=vert?(a*w+p-k)*4+ch:((p-k)*w+a)*4+ch,i2=vert?(a*w+p+k)*4+ch:((p+k)*w+a)*4+ch;s1+=data[i1];s2+=data[i2]}d+=Math.abs(s1-s2)/win}return d}
+function snapKey(S,k){
+  if(S.lock[k])return;const vert=k.endsWith('L')||k.endsWith('R'),b=S.b,cw=b.oR-b.oL,ch=b.oB-b.oT;
+  const a0=vert?b.oT+.2*ch:b.oL+.2*cw,a1=vert?b.oB-.2*ch:b.oR-.2*cw,dim=vert?S.w:S.h,v0=Math.round(b[k]),R=Math.max(5,Math.round(.012*(vert?cw:ch))),prof=[];
+  const step=Math.max(2,Math.round((a1-a0)/80));let mean=0;
+  for(let p=Math.max(6,v0-R);p<=Math.min(dim-7,v0+R);p++){let s=0,c=0;for(let a=Math.round(a0);a<a1;a+=step){s+=stepAt(S,vert,a,p,3);c++}prof.push([p,s/c]);mean+=s/c}
+  if(prof.length<3)return;mean/=prof.length;let bi=0;prof.forEach((q,i)=>{if(q[1]>prof[bi][1])bi=i});
+  if(prof[bi][1]<1.25*mean)return;
+  let sub=0;if(bi>0&&bi<prof.length-1){const d1=prof[bi-1][1],d2=prof[bi][1],d3=prof[bi+1][1],den=d1-2*d2+d3;if(Math.abs(den)>1e-6)sub=Math.max(-.5,Math.min(.5,.5*(d1-d3)/den))}
+  setB(S,k,prof[bi][0]+sub+.5);
+}
+const vpC=VP(cv,()=>sides[curC]);
+function lockVis(S,h){return hLocked(S,h)||sig(h)===hovSig||sig(h)===selSig}
+function drawMain(){
+  const S=sides[curC];if(!S||!vpC.ensure())return;
+  const x=cv.getContext('2d'),d=vpC.dpr,T=(X,Y)=>vpC.toScr(X,Y);
+  x.setTransform(1,0,0,1,0,0);x.fillStyle='#000';x.fillRect(0,0,cv.width,cv.height);
+  x.imageSmoothingEnabled=vpC.k<1.5*d;x.drawImage(S.c,vpC.ox,vpC.oy,S.w*vpC.k,S.h*vpC.k);
+  const b=S.b;
+  [['o','oL','oR','oT','oB','#ff5a5f'],['i','iL','iR','iT','iB','#3b82ff']].forEach(([set,l,r,t,bo,col])=>{
+    if(!show[set])return;const a=T(b[l],b[t]),c2=T(b[r],b[bo]);x.strokeStyle=col;x.lineWidth=1.5*d;x.setLineDash([7*d,5*d]);x.strokeRect(a.x,a.y,c2.x-a.x,c2.y-a.y);x.setLineDash([]);
+  });
+  const H=mainHandles(S);
+  H.forEach(h=>{const q=T(h.x,h.y);x.fillStyle=h.set==='o'?'#ff5a5f':'#3b82ff';x.strokeStyle='#fff';x.lineWidth=1.8*d;x.beginPath();x.arc(q.x,q.y,7*d,0,7);x.fill();x.stroke()});
+  H.forEach(h=>{if(lockVis(S,h)){const q=T(h.x,h.y);drawLock(x,q.x+16*d,q.y-16*d,9*d,hLocked(S,h))}});
+  $('#zlC').textContent=vpC.zoomTxt();$('#px').textContent=S.w+' × '+S.h+' px';$('#lowconf').hidden=!(S.conf<.3||!S.auto);
+  readouts();
+}
+function ratios(S){const b=S.b,l=b.iL-b.oL,r=b.oR-b.iR,t=b.iT-b.oT,m=b.oB-b.iB,lr=l/(l+r)*100,tb=t/(t+m)*100;return {lr,tb,worst:Math.max(lr,100-lr,tb,100-tb)}}
+function readouts(){
+  const S=sides[curC];if(!S)return;const r=ratios(S),f=v=>v.toFixed(2)+' | '+(100-v).toFixed(2);
+  $('#tbv').textContent=f(r.tb);$('#lrv').textContent=f(r.lr);
+  $('#bTB').style.background=`linear-gradient(90deg,rgba(59,130,255,.5) ${r.tb}%,rgba(59,130,255,.12) ${r.tb}%)`;
+  $('#bLR').style.background=`linear-gradient(90deg,rgba(255,90,95,.5) ${r.lr}%,rgba(255,90,95,.12) ${r.lr}%)`;
+  chips();
+}
+function pos(e,c){const r=c.getBoundingClientRect();return {x:(e.clientX-r.left)*c.width/r.width,y:(e.clientY-r.top)*c.height/r.height,k:c.width/r.width}}
+function hitMain(p){
+  const S=sides[curC],H=mainHandles(S),d=vpC.dpr;
+  for(const h of H){if(!lockVis(S,h))continue;const q=vpC.toScr(h.x,h.y);if(Math.hypot(p.x-(q.x+16*d),p.y-(q.y-16*d))<=11*d)return {h,lock:true}}
+  let best=null,bd=18*d;for(const h of H){const q=vpC.toScr(h.x,h.y),dd=Math.hypot(p.x-q.x,p.y-q.y);if(dd<bd){bd=dd;best=h}}
+  return best?{h:best}:null;
+}
+let drag=null;
+function finishDrag(){
+  const S=sides[curC];if(drag&&drag.moved&&snapOn&&S)keysOf(drag.h).forEach(k=>snapKey(S,k));
+  drag=null;drawMain();renderPanels(true);
+}
+attachVP(vpC,drawMain,{
+  down(p){const S=sides[curC],hit=hitMain(p);if(!hit)return false;selSig=sig(hit.h);
+    if(hit.lock){toggleLock(S,hit.h);drawMain();renderPanels(true);return true}
+    drag={h:hit.h};drawMain();return true},
+  move(p){if(!drag)return;drag.moved=true;const S=sides[curC],q=vpC.toImg(p.x,p.y),h=drag.h;if(h.xk)setB(S,h.xk,q.x);if(h.yk)setB(S,h.yk,q.y);drawMain();renderPanels(true)},
+  up(){finishDrag()},
+  cancel(){drag=null},
+  hover(p){const S=sides[curC],hit=hitMain(p),sg=hit?sig(hit.h):null;if(sg!==hovSig){hovSig=sg;drawMain()}},
+  dbl(p){const S=sides[curC],hit=hitMain(p);if(hit){toggleLock(S,hit.h);drawMain();renderPanels(true)}}
+});
+window.addEventListener('resize',()=>{if(step===2)drawMain();if(step===4)surfaceView()});
+$('#fitC').onclick=()=>{vpC.S=null;drawMain()};
+$('#tab-front').onclick=()=>{curC='front';$('#tab-front').classList.add('on');$('#tab-back').classList.remove('on');vpC.S=null;drawMain();renderPanels()};
+$('#tab-back').onclick=()=>{if(!sides.back)return;curC='back';$('#tab-back').classList.add('on');$('#tab-front').classList.remove('on');vpC.S=null;drawMain();renderPanels()};
+$('#resetall').onclick=()=>{const S=sides[curC];if(S){ALLK.forEach(k=>{if(!S.lock[k])S.b[k]=S.b0[k]});drawMain();renderPanels()}};
+$('#snap').onclick=()=>{snapOn=!snapOn;$('#snap').textContent='Snap: '+(snapOn?'on':'off');$('#snap').classList.toggle('on',snapOn)};
+$('#lockall').onclick=()=>{const S=sides[curC];if(!S)return;const all=ALLK.every(k=>S.lock[k]);ALLK.forEach(k=>S.lock[k]=!all);$('#lockall').textContent=all?'🔒 Lock all':'🔓 Unlock all';drawMain();renderPanels(true)};
+$('#vc').onclick=()=>{view='corners';$('#vc').classList.add('on');$('#ve').classList.remove('on');renderPanels()};
+$('#ve').onclick=()=>{view='edges';$('#ve').classList.add('on');$('#vc').classList.remove('on');renderPanels()};
+$('#so').onclick=()=>{if(show.o&&!show.i)return;show.o=!show.o;$('#so').classList.toggle('on',show.o);drawMain();renderPanels()};
+$('#si').onclick=()=>{if(show.i&&!show.o)return;show.i=!show.i;$('#si').classList.toggle('on',show.i);drawMain();renderPanels()};
+
+/* zoom panels */
+let panels=[];
+function panelDefs(S){
+  const b=S.b,cw=b.oR-b.oL,defs=[];
+  if(view==='corners'){
+    [['TOP LEFT','oL','oT','iL','iT',1,1],['TOP RIGHT','oR','oT','iR','iT',-1,1],['BOTTOM LEFT','oL','oB','iL','iB',1,-1],['BOTTOM RIGHT','oR','oB','iR','iB',-1,-1]].forEach(([title,xk,yk,ixk,iyk,sx,sy])=>{
+      const q=Math.max(.1*cw,2.3*Math.max(Math.abs(b[ixk]-b[xk]),Math.abs(b[iyk]-b[yk])));
+      const x0=sx>0?b[xk]-q*.3:b[xk]-q*.7,y0=sy>0?b[yk]-q*.3:b[yk]-q*.7;
+      defs.push({title,x0,y0,q,vx:[xk,ixk],vy:[yk,iyk],hs:[{set:'o',xk,yk},{set:'i',xk:ixk,yk:iyk}]});
+    });
+  }else{
+    const mx=(b.oL+b.oR)/2,my=(b.oT+b.oB)/2;
+    [['TOP','oT','iT',0],['RIGHT','oR','iR',1],['BOTTOM','oB','iB',0],['LEFT','oL','iL',1]].forEach(([title,ok,ik,vert])=>{
+      const q=Math.max(.1*cw,2.6*Math.abs(b[ik]-b[ok])),sgn=(ok==='oT'||ok==='oL')?1:-1;
+      let x0,y0;
+      if(!vert){x0=mx-q/2;y0=sgn>0?b[ok]-q*.3:b[ok]-q*.7}else{y0=my-q/2;x0=sgn>0?b[ok]-q*.3:b[ok]-q*.7}
+      defs.push({title,x0,y0,q,vx:vert?[ok,ik]:[],vy:vert?[]:[ok,ik],hs:[{set:'o',xk:vert?ok:null,yk:vert?null:ok,mid:1},{set:'i',xk:vert?ik:null,yk:vert?null:ik,mid:1}]});
+    });
+  }
+  return defs;
+}
+function hitPanel(P,p){
+  for(const h of P.hand){const sg=sig(h);if(!(hLockedP(h)||sg===selSig))continue;if(Math.hypot(p.x-(h.px+17),p.y-(h.py-17))<=13)return {h,lock:true}}
+  let best=null,bd=28;for(const h of P.hand){const dd=Math.hypot(h.px-p.x,h.py-p.y);if(dd<bd){bd=dd;best=h}}
+  return best?{h:best}:null;
+}
+const hLockedP=h=>{const S=sides[curC];return S&&hLocked(S,h)};
+function renderPanels(light){
+  const S=sides[curC],g=$('#pgrid');if(!S)return;const defs=panelDefs(S);
+  if(!light||panels.length!==4||panels[0].view!==view){
+    g.innerHTML='';panels=defs.map((d,i)=>{
+      const wrap=document.createElement('div');wrap.className='pn';const c=document.createElement('canvas');c.width=c.height=300;const t=document.createElement('div');t.textContent=d.title;wrap.append(c,t);g.appendChild(wrap);
+      const P={c,view,def:d,idx:i,hand:[]};
+      c.addEventListener('pointerdown',e=>{const P2=panels[i],p=pos(e,c),hit=hitPanel(P2,p);if(!hit)return;selSig=sig(hit.h);
+        if(hit.lock){toggleLock(sides[curC],hit.h);drawMain();renderPanels(true);return}
+        drag={h:hit.h,panel:i};c.setPointerCapture(e.pointerId);e.preventDefault();renderPanels(true)});
+      c.addEventListener('pointermove',e=>{if(!drag||drag.panel!==i)return;drag.moved=true;const S2=sides[curC],d2=panels[i].def,p=pos(e,c),X=d2.x0+p.x/c.width*d2.q,Y=d2.y0+p.y/c.height*d2.q,h=drag.h;
+        if(h.xk)setB(S2,h.xk,X);if(h.yk)setB(S2,h.yk,Y);drawMain();renderPanels(true)});
+      ['pointerup','pointercancel'].forEach(ev=>c.addEventListener(ev,()=>{if(drag&&drag.panel===i)finishDrag()}));
+      c.addEventListener('dblclick',e=>{const hit=hitPanel(panels[i],pos(e,c));if(hit){toggleLock(sides[curC],hit.h);drawMain();renderPanels(true)}});
+      return P;
+    });
+  }
+  panels.forEach((P,i)=>{
+    P.def=defs[i];const d=P.def,c=P.c,x=c.getContext('2d'),k=c.width/d.q,b=S.b;
+    x.fillStyle='#000';x.fillRect(0,0,c.width,c.height);x.drawImage(S.c,d.x0,d.y0,d.q,d.q,0,0,c.width,c.height);
+    const keyset=k2=>(k2[0]==='o'&&show.o)||(k2[0]==='i'&&show.i);x.lineWidth=1.5;
+    d.vx.forEach(key=>{if(!keyset(key))return;x.strokeStyle=key[0]==='o'?'#ff5a5f':'#3b82ff';x.setLineDash([6,5]);const px=(b[key]-d.x0)*k;x.beginPath();x.moveTo(px,0);x.lineTo(px,c.height);x.stroke()});
+    d.vy.forEach(key=>{if(!keyset(key))return;x.strokeStyle=key[0]==='o'?'#ff5a5f':'#3b82ff';x.setLineDash([6,5]);const py=(b[key]-d.y0)*k;x.beginPath();x.moveTo(0,py);x.lineTo(c.width,py);x.stroke()});
+    x.setLineDash([]);P.hand=[];
+    d.hs.forEach(h=>{if(!show[h.set])return;
+      const hx=h.xk?b[h.xk]:d.x0+d.q/2,hy=h.yk?b[h.yk]:d.y0+d.q/2;
+      P.hand.push({set:h.set,xk:h.xk,yk:h.yk,px:(hx-d.x0)*k,py:(hy-d.y0)*k});
+    });
+    P.hand.forEach(h=>{x.fillStyle=h.set==='o'?'#ff5a5f':'#3b82ff';x.strokeStyle='#fff';x.lineWidth=2;x.beginPath();x.arc(h.px,h.py,10,0,7);x.fill();x.stroke()});
+    P.hand.forEach(h=>{if(hLocked(S,h)||sig(h)===selSig)drawLock(x,h.px+17,h.py-17,12,hLocked(S,h))});
+  });
+}
+
+/* ================= grader tables ================= */
+const avgmin=a=>.5*Math.min(...a)+.5*a.reduce((x,y)=>x+y,0)/a.length;
+const E=(g,pos,o)=>Object.assign({g,pos:pos==null?Math.min(g,10):pos},o||{});
+const CO={
+ PSA:{cent:[[10,55,75],[9,60,90],[8,65,90],[7,70,90],[6,80,90],[5,85,90]],floor:4,half:false,pr:false,
+  ladder:[E(10),E(9),E(8),E(7),E(6),E(5)],tiers:[10,9,8],tl:['10','9','8','7 or lower'],topT:10,lab:g=>'PSA '+g},
+ BGS:{cent:[[10,52,55],[9.5,55,60],[9,60,70],[8.5,65,80],[8,70,80],[7.5,75,90],[7,80,90],[6,85,90]],floor:5,half:true,pr:true,
+  ladder:[E(10,10.2,{pris:1}),E(9.5),E(9),E(8.5),E(8),E(7.5),E(7)],tiers:[10,9.5,9],tl:['10 Pristine','9.5','9','8.5 or lower'],topT:9.5,lab:g=>g>=10?'BGS 10 Pristine':'BGS '+g},
+ TAG:{cent:[[10.5,52,54],[10,55,65],[9,60,75],[8.5,62.5,95],[8,65,95],[7,70,95],[6,80,95]],floor:5,half:true,pr:true,
+  ladder:[E(10.5,10.2,{pris:1,w:.5}),E(10),E(9),E(8.5),E(8),E(7)],tiers:[10,9,8.5],tl:['10 (Pristine / Gem Mint)','9','8.5','8 or lower'],topT:10,lab:g=>g>=10.5?'TAG Pristine 10':g>=10?'TAG Gem Mint 10':'TAG '+g},
+ CGC:{cent:[[10.5,52,55],[10,55,75],[9.5,55,80],[9,60,90],[8.5,65,90],[8,70,90],[7.5,75,90],[7,80,90],[6,85,90]],floor:5,half:true,pr:true,
+  ladder:[E(10.5,10.2,{pris:1,w:.5}),E(10),E(9.5),E(9),E(8.5),E(8),E(7)],tiers:[10,9.5,9],tl:['10 (Pristine / Gem Mint)','9.5','9','8.5 or lower'],topT:10,lab:g=>g>=10.5?'CGC Pristine 10':g>=10?'CGC Gem Mint 10':'CGC '+g}
+};
+function tierOf(C,wf,wb){for(const [g,f,b] of C.cent){if(wf<=f&&(wb==null||wb<=b))return g}return C.floor}
+const tierTxt=t=>t>=10.5?'10':String(t);
+function chips(){
+  const F=sides.front;if(!F)return;const rf=ratios(F),rb=sides.back?ratios(sides.back):null;
+  $('#chips').innerHTML=['BGS','PSA','TAG','CGC'].map(co=>`<div class="chip"><span>${co==='BGS'?'BECKETT':co}</span><span>${tierTxt(tierOf(CO[co],rf.worst,rb?rb.worst:null))}</span></div>`).join('');
+}
+
+/* ================= corners & edges ================= */
+function mkSel(id,opts,val){const s=document.createElement('select');s.id=id;opts.forEach((t,i)=>{const o=document.createElement('option');o.value=i;o.textContent=t;s.appendChild(o)});s.value=val||0;return s}
+CN.forEach((n,k)=>{const d=document.createElement('div');d.className='cell';d.innerHTML=`<small>${n}</small><div class="z"><canvas width="96" height="96" id="cf${k}"></canvas><canvas width="96" height="96" id="cb${k}"></canvas></div>`;const s=mkSel('cs'+k,LV);s.onchange=()=>{dirty['c'+k]=1};d.appendChild(s);$('#corners').appendChild(d)});
+EN.forEach((n,k)=>{const d=document.createElement('div');d.className='cell';d.innerHTML=`<small>${n} edge</small>`;const s=mkSel('es'+k,LV);s.onchange=()=>{dirty['e'+k]=1};d.appendChild(s);$('#edges').appendChild(d)});
+function rm(S,x0,y0,x1,y1){
+  if(x1<x0)[x0,x1]=[x1,x0];if(y1<y0)[y0,y1]=[y1,y0];
+  x0=Math.max(0,Math.floor(x0));y0=Math.max(0,Math.floor(y0));x1=Math.min(S.w,Math.ceil(x1));y1=Math.min(S.h,Math.ceil(y1));
+  if(x1<=x0||y1<=y0)return null;let s=0,n=0;for(let y=y0;y<y1;y++){const o=y*S.w;for(let x=x0;x<x1;x++){s+=S.minc[o+x];n++}}return s/n;
+}
+function lvl(diff,fr){if(diff<28&&fr<.01)return 0;if(diff<55)return fr>.35?2:1;if(diff<95)return 2;return 3}
+function analyse(S){
+  const b=S.b,cw=b.oR-b.oL,e=.004*cw,t=.012*cw,g1=.03*cw,g2=.05*cw,s=.07*cw,c=[],ed=[];
+  for(let k=0;k<4;k++){
+    const X=(k===0||k===3)?b.oL:b.oR,Y=k<2?b.oT:b.oB,sx=(k===0||k===3)?1:-1,sy=k<2?1:-1;
+    const R=(a0,a1,c0,c1)=>rm(S,X+sx*a0,Y+sy*c0,X+sx*a1,Y+sy*c1);
+    const o=[R(0,s,e,e+t),R(e,e+t,e+t,s)].filter(v=>v!==null),rf=[R(g1,s,g1,g2),R(g1,g2,g2,s)].filter(v=>v!==null);
+    const mo=o.reduce((a,v)=>a+v,0)/(o.length||1),mr=rf.reduce((a,v)=>a+v,0)/(rf.length||1);c.push(lvl(mo-mr,0));
+  }
+  for(let k=0;k<4;k++){
+    let hits=0,tot=0,sum=0;
+    for(let i=0;i<10;i++){
+      let o,r;const f0=.1+.08*i,f1=f0+.08;
+      if(k===0||k===2){const y=k===0?b.oT:b.oB,sy=k===0?1:-1,x0=b.oL+f0*cw,x1=b.oL+f1*cw;o=rm(S,x0,y+sy*e,x1,y+sy*(e+t));r=rm(S,x0,y+sy*g1,x1,y+sy*g2)}
+      else{const x=k===3?b.oL:b.oR,sx=k===3?1:-1,chh=b.oB-b.oT,y0=b.oT+f0*chh,y1=b.oT+f1*chh;o=rm(S,x+sx*e,y0,x+sx*(e+t),y1);r=rm(S,x+sx*g1,y0,x+sx*g2,y1)}
+      if(o===null||r===null)continue;const d=o-r;tot++;sum+=Math.max(0,d);if(d>45)hits++;
+    }
+    const fr=tot?hits/tot:0,md=tot?sum/tot:0;ed.push(fr===0&&md<20?0:fr<.2?1:fr<.5?2:3);
+  }
+  return {c,e:ed};
+}
+function drawCrop(canvas,S,k){
+  const x=canvas.getContext('2d');x.fillStyle='#000';x.fillRect(0,0,96,96);if(!S)return;
+  const b=S.b,cw=b.oR-b.oL,q=.12*cw,m=.02*cw,X=(k===0||k===3)?b.oL:b.oR,Y=k<2?b.oT:b.oB,sx=(k===0||k===3)?1:-1,sy=k<2?1:-1;
+  x.drawImage(S.c,sx>0?X-m:X-q,sy>0?Y-m:Y-q,q+m,q+m,0,0,96,96);
+}
+function ceOf(S){const k=keyOf(S);if(!S.ce||S.ce.key!==k)S.ce={key:k,res:analyse(S)};return S.ce.res}
+function refreshCE(){
+  const F=sides.front,B=sides.back;if(!F)return;
+  for(let k=0;k<4;k++){drawCrop($('#cf'+k),F,k);drawCrop($('#cb'+k),B,k)}
+  const a=[F&&ceOf(F),B&&ceOf(B)].filter(Boolean);
+  const hc=[0,1,2,3].map(k=>Math.max(...a.map(r=>r.c[k]))),he=[0,1,2,3].map(k=>Math.max(...a.map(r=>r.e[k])));
+  for(let k=0;k<4;k++){if(!dirty['c'+k])$('#cs'+k).value=hc[k];if(!dirty['e'+k])$('#es'+k).value=he[k]}
+}
+
+/* ================= surface ================= */
+const sv=$('#sview'),sx=sv.getContext('2d');
+const surf=mkSel('surfsel',SURF);surf.id='surfsel';$('#surfsel').replaceWith(surf);surf.onchange=()=>{dirty.surf=1};
+function box1(src,W,H,r,horiz){
+  const out=new Float32Array(W*H);
+  if(horiz){for(let y=0;y<H;y++){const o=y*W,P=new Float32Array(W+1);for(let x=0;x<W;x++)P[x+1]=P[x]+src[o+x];for(let x=0;x<W;x++){const a=Math.max(0,x-r),b=Math.min(W-1,x+r);out[o+x]=(P[b+1]-P[a])/(b-a+1)}}}
+  else{for(let x=0;x<W;x++){const P=new Float32Array(H+1);for(let y=0;y<H;y++)P[y+1]=P[y]+src[y*W+x];for(let y=0;y<H;y++){const a=Math.max(0,y-r),b=Math.min(H-1,y+r);out[y*W+x]=(P[b+1]-P[a])/(b-a+1)}}}
+  return out;
+}
+function surfaceScan(S,sn){
+  const b=S.b,w=S.w,cw=b.oR-b.oL,ch=b.oB-b.oT,x0=Math.round(b.oL+.025*cw),x1=Math.round(b.oR-.025*cw),y0=Math.round(b.oT+.025*ch),y1=Math.round(b.oB-.025*ch),W=x1-x0,H=y1-y0;
+  if(W<60||H<60)return {comps:[],level:0,flat:0,glare:0};
+  const g=new Float32Array(W*H);let gl=0;
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){const i=(y0+y)*w+x0+x;g[y*W+x]=S.gray[i];if(S.minc[i]>243)gl++}
+  const bl=box1(box1(g,W,H,3,true),W,H,3,false),hp=new Float32Array(W*H);for(let i=0;i<hp.length;i++)hp[i]=g[i]-bl[i];
+  const ab=hp.map(Math.abs),En=box1(box1(ab,W,H,11,true),W,H,11,false);
+  const samp=[];for(let i=0;i<En.length;i+=37)samp.push(En[i]);samp.sort((a,b2)=>a-b2);
+  const tf=Math.max(1.5,samp[Math.floor(samp.length*.5)]),flat=new Uint8Array(W*H);let nf=0;
+  for(let i=0;i<flat.length;i++)if(En[i]<=tf){flat[i]=1;nf++}
+  const hr=box1(hp,W,H,12,true),vr=box1(hp,W,H,12,false),rs=[];
+  for(let i=0;i<hr.length;i+=29)if(flat[i])rs.push(Math.max(Math.abs(hr[i]),Math.abs(vr[i])));
+  rs.sort((a,b2)=>a-b2);const sigma=Math.max(.6,1.4826*(rs[rs.length>>1]||0)),T=Math.max(4,[7,5.5,4.2][sn]*sigma);
+  const cs=14,cwn=Math.ceil(W/cs),chn=Math.ceil(H/cs),cnt=new Uint16Array(cwn*chn);
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){const i=y*W+x;if(flat[i]&&(Math.abs(hr[i])>T||Math.abs(vr[i])>T))cnt[((y/cs)|0)*cwn+((x/cs)|0)]++}
+  const mark=new Uint8Array(cwn*chn);for(let i=0;i<mark.length;i++)if(cnt[i]>=10)mark[i]=1;
+  const comps=[],seen=new Uint8Array(mark.length);
+  for(let i=0;i<mark.length;i++){if(!mark[i]||seen[i])continue;const st=[i];seen[i]=1;let n=0,mnx=1e9,mny=1e9,mxx=-1,mxy=-1,tot=0;
+    while(st.length){const c=st.pop(),cx2=c%cwn,cy2=(c/cwn)|0;n++;tot+=cnt[c];mnx=Math.min(mnx,cx2);mxx=Math.max(mxx,cx2);mny=Math.min(mny,cy2);mxy=Math.max(mxy,cy2);
+      for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const nx=cx2+dx,ny=cy2+dy;if(nx<0||ny<0||nx>=cwn||ny>=chn)continue;const j=ny*cwn+nx;if(mark[j]&&!seen[j]){seen[j]=1;st.push(j)}}}
+    const bw=(mxx-mnx+1)*cs,bh=(mxy-mny+1)*cs,big=bw>.35*cw&&bh>.35*ch,asp=Math.max(bw,bh)/Math.min(bw,bh);
+    if((n>=2||tot>=30)&&!big&&(asp>=2||n<=4))comps.push({x:x0+mnx*cs,y:y0+mny*cs,w:bw,h:bh,n});}
+  const area=comps.reduce((a,c)=>a+c.n,0);
+  const level=!comps.length?0:(comps.length<=2&&area<=6)?1:(comps.length<=6&&area<=25)?2:3;
+  return {comps,level,flat:nf/(W*H),glare:gl/(W*H)};
+}
+const vpS=VP(sv,()=>sides[curS]);
+let relMode='relief',lightDeg=225,gain=2.5;
+function makeEmboss(S,deg,g){
+  const {w,h}=S,bl=box1(box1(S.gray,w,h,1,true),w,h,1,false),c=document.createElement('canvas');c.width=w;c.height=h;
+  const x=c.getContext('2d'),im=x.createImageData(w,h),od=im.data,a=deg*Math.PI/180,ca=Math.cos(a),sa=Math.sin(a);
+  for(let y=0;y<h;y++){for(let xx=0;xx<w;xx++){
+    const i=y*w+xx,p=i*4;let v=128;
+    if(y>0&&y<h-1&&xx>0&&xx<w-1){v=128+(ca*(bl[i+1]-bl[i-1])+sa*(bl[i+w]-bl[i-w]))*g;v=v<0?0:v>255?255:v}
+    od[p]=od[p+1]=od[p+2]=v;od[p+3]=255;
+  }}
+  x.putImageData(im,0,0);return c;
+}
+function ensureEmboss(S){const key=lightDeg+':'+gain;if(!S.emb||S.emb.key!==key)S.emb={key,canvas:makeEmboss(S,lightDeg,gain)};return S.emb.canvas}
+function surfaceDraw(){
+  const S=sides[curS];if(!S||!S.surf||!vpS.ensure())return;
+  const d=vpS.dpr,src=relMode==='relief'?ensureEmboss(S):S.c;sx.setTransform(1,0,0,1,0,0);sx.fillStyle='#000';sx.fillRect(0,0,sv.width,sv.height);
+  sx.imageSmoothingEnabled=vpS.k<1.5*d;sx.drawImage(src,vpS.ox,vpS.oy,S.w*vpS.k,S.h*vpS.k);
+  if(ovl){sx.lineWidth=2*d;sx.strokeStyle='#ff5a5f';sx.fillStyle='rgba(255,90,95,.16)';S.surf.comps.forEach(c=>{const a=vpS.toScr(c.x,c.y);sx.fillRect(a.x,a.y,c.w*vpS.k,c.h*vpS.k);sx.strokeRect(a.x,a.y,c.w*vpS.k,c.h*vpS.k)})}
+  $('#zlS').textContent=vpS.zoomTxt();
+}
+function ensureSurf(S){if(!S.surf||S.surf.sens!==sens||S.surf.key!==keyOf(S)){S.surf=surfaceScan(S,sens);S.surf.sens=sens;S.surf.key=keyOf(S)}}
+function surfaceView(){
+  ['front','back'].forEach(s=>{if(sides[s])ensureSurf(sides[s])});
+  const S=sides[curS];if(!S)return;surfaceDraw();
+  const lv=Math.max(...['front','back'].map(s=>sides[s]?sides[s].surf.level:0)),R=S.surf;
+  const names=['No suspicious marks','A few faint marks','Several marks','Many marks'];
+  $('#sres').textContent=names[R.level];
+  $('#sdet').textContent=`${curS==='front'?'Front':'Back'}: ${R.comps.length} flagged area${R.comps.length===1?'':'s'}. ${Math.round(R.flat*100)}% of the card was flat enough to scan${R.flat<.25?' (mostly textured, check by eye)':''}.`;
+  const gw=$('#glare'),gmax=Math.max(...['front','back'].map(s=>sides[s]?sides[s].surf.glare:0));
+  gw.hidden=gmax<.015;gw.textContent='Glare or blown-out highlights cover about '+Math.round(gmax*100)+'% of the card. Reshoot at a slight angle to the light for a reliable surface read.';
+  if(!dirty.surf)$('#surfsel').value=Math.min(lv,R.flat<.3?1:2);
+}
+attachVP(vpS,surfaceDraw,{});
+const tog=(sel,btn)=>{$$(sel).forEach(x=>x.classList.toggle('on',x===btn))};
+$('#stab-front').onclick=()=>{curS='front';$('#stab-front').classList.add('on');$('#stab-back').classList.remove('on');vpS.S=null;surfaceView()};
+$('#stab-back').onclick=()=>{if(!sides.back)return;curS='back';$('#stab-back').classList.add('on');$('#stab-front').classList.remove('on');vpS.S=null;surfaceView()};
+$('#vmRelief').onclick=()=>{relMode='relief';$('#vmRelief').classList.add('on');$('#vmOrig').classList.remove('on');surfaceDraw()};
+$('#vmOrig').onclick=()=>{relMode='orig';$('#vmOrig').classList.add('on');$('#vmRelief').classList.remove('on');surfaceDraw()};
+$$('[data-light]').forEach(b=>b.onclick=()=>{lightDeg=+b.dataset.light;tog('[data-light]',b);relMode='relief';$('#vmRelief').classList.add('on');$('#vmOrig').classList.remove('on');surfaceDraw()});
+$$('[data-gain]').forEach(b=>b.onclick=()=>{gain=+b.dataset.gain;tog('[data-gain]',b);surfaceDraw()});
+$$('[data-sens]').forEach(b=>b.onclick=()=>{sens=+b.dataset.sens;tog('[data-sens]',b);surfaceView()});
+$('#ovl').onclick=()=>{ovl=!ovl;$('#ovl').textContent=ovl?'Overlay on':'Overlay off';$('#ovl').classList.toggle('on',ovl);surfaceDraw()};
+$('#fitS').onclick=()=>{vpS.S=null;surfaceDraw()};
+$('#scancard').onclick=async()=>{
+  if(scanning)return;scanning=true;const ov=$('#scanov'),sd=['front','back'].filter(k=>sides[k]);ov.hidden=false;
+  $('#scanTitle').textContent='Scanning the surface';$('#scanlist').innerHTML=sd.map((k,i)=>`<li id="sg${i}"><i></i>Searching the ${k} for scratches and print lines</li>`).join('');
+  let n=0;const setP=()=>{const p=Math.round(n/sd.length*100);$('#scanbar').style.width=p+'%';$('#scanPct').textContent=p+'%'};setP();
+  for(let i=0;i<sd.length;i++){const S=sides[sd[i]];$('#sg'+i).className='act';drawScanPrev(S);await tick();S.surf=surfaceScan(S,sens);S.surf.sens=sens;S.surf.key=keyOf(S);$('#sg'+i).className='ok';n++;setP();await tick()}
+  scanning=false;ov.hidden=true;dirty.surf=0;delete dirty.surf;surfaceView();
+};
+
+/* ================= report ================= */
+let ALL=null,selCo='PSA';const store={};
+function calc(co){
+  const C=CO[co],F=sides.front,rf=ratios(F),rb=sides.back?ratios(sides.back):null,tier=tierOf(C,rf.worst,rb?rb.worst:null);
+  const cs=[0,1,2,3].map(k=>+$('#cs'+k).value),es=[0,1,2,3].map(k=>+$('#es'+k).value),si=+$('#surfsel').value;
+  const cents=Math.min(tier,10),corners=avgmin(cs.map(i=>LS[i])),edges=avgmin(es.map(i=>LS[i])),ss=LS[si];
+  const flawless=cs.every(i=>!i)&&es.every(i=>!i)&&!si,pristineOK=!!(C.pr&&flawless&&tier>=C.cent[0][0]);
+  const worst=Math.min(cents,corners,edges,ss),x=Math.min(.25*cents+.25*corners+.2*edges+.3*ss,worst+1,cents);
+  const w=C.ladder.map(e=>{const gn=Math.min(e.g,10);if(gn>cents+1e-9||gn>worst+1+1e-9||(e.pris&&!pristineOK))return 0;return Math.exp(-Math.pow(e.pos-x,2)/(2*.65*.65))*(e.w||1)});
+  const sum=w.reduce((a,b)=>a+b,0);let p;
+  if(sum>1e-9)p=w.map(v=>v/sum);else{p=w.map(()=>0);const i=C.ladder.findIndex(e=>Math.min(e.g,10)<=Math.min(cents,worst+1)&&!(e.pris&&!pristineOK));p[i<0?C.ladder.length-1:i]=1}
+  let g=x>=9.95?10:C.half?Math.min(9.5,Math.round(x*2)/2):Math.min(9,Math.round(x));
+  g=Math.max(1,Math.min(g,cents));
+  if(g>=10&&C.pr)g=pristineOK?C.cent[0][0]:(co==='BGS'?9.5:10);
+  const rung=C.ladder.find(e=>e.g<=g);if(rung)g=rung.g;
+  const top=p.reduce((a,v,i)=>a+(C.ladder[i].g>=C.topT?v:0),0);
+  return {co,C,rf,rb,tier,cents,corners,edges,surface:ss,x,g,p,top,pristineOK};
+}
+const fmt=n=>'$'+(Math.round(n*100)/100).toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:2});
+const gnum=g=>g>=10.5?'10':String(g);
+const gsub=(co,g)=>g>=10.5?'Pristine':g===10?(co==='BGS'?'Pristine':'Gem Mint'):'';
+const IDS=['v10','v9','v8','v7'],LIDS=['lv10','lv9','lv8','lv7'];
+function saveVals(){store[selCo]=IDS.map(i=>$('#'+i).value)}
+function loadVals(){const C=CO[selCo],v=store[selCo]||['','','',''];IDS.forEach((id,i)=>{$('#'+id).value=v[i];$('#'+LIDS[i]).textContent='Graded '+C.tl[i]+' value ($)'})}
+function setCo(co){saveVals();selCo=co;loadVals();$$('#gsel button').forEach(b=>b.classList.toggle('on',b.dataset.g===selCo));if(step===6)report()}
+$$('#gsel button').forEach(b=>b.onclick=()=>setCo(b.dataset.g));
+['vRaw','v10','v9','v8','v7','fee','ship','name'].forEach(id=>$('#'+id).addEventListener('input',()=>{if(step===6)report()}));
+function report(){
+  if(!sides.front)return;
+  ALL={};Object.keys(CO).forEach(co=>ALL[co]=calc(co));
+  $('#cos').innerHTML=Object.keys(CO).map(co=>{const R=ALL[co];
+    return `<div class="co${co===selCo?' sel':''}" data-co="${co}"><small>${co}</small><div class="g">${gnum(R.g)}</div><div class="l">${gsub(co,R.g)}</div><div class="t">${Math.round(R.top*100)}% top-grade odds</div><div class="t" style="margin-top:2px">Centering grade ${tierTxt(R.tier)}</div></div>`}).join('');
+  $$('#cos .co').forEach(el=>el.onclick=()=>setCo(el.dataset.co));
+  const R=ALL[selCo],C=R.C;
+  $('#dh').textContent=C.lab(R.g)+': details';
+  const bar=(id,v)=>{$('#b-'+id).style.width=Math.max(5,v*10)+'%';$('#n-'+id).textContent=(Math.round(v*10)/10)};
+  bar('c',R.cents);bar('k',R.corners);bar('e',R.edges);bar('s',R.surface);
+  $('#probs').innerHTML='<div style="font-size:13px;color:var(--mute);margin-bottom:6px">Grade probability</div>'+C.ladder.map((e,i)=>`<div class="sc" style="grid-template-columns:120px 1fr 40px"><span style="font-size:13px">${C.lab(e.g)}</span><div class="bar"><div style="width:${R.p[i]*100}%"></div></div><b>${Math.round(R.p[i]*100)}%</b></div>`).join('');
+  const dr=[],f=R.rf;
+  dr.push(`Front centering ${Math.round(f.lr)}/${Math.round(100-f.lr)} L/R, ${Math.round(f.tb)}/${Math.round(100-f.tb)} T/B.`);
+  if(R.rb)dr.push(`Back centering ${Math.round(R.rb.lr)}/${Math.round(100-R.rb.lr)} L/R, ${Math.round(R.rb.tb)}/${Math.round(100-R.rb.tb)} T/B.`);else dr.push("No back photo: back centering and back whitening weren't checked.");
+  dr.push(`${selCo} centering grade: ${tierTxt(R.tier)}${R.tier<C.cent[0][0]?' (below this grader\'s top centering tier)':''}.`);
+  const lowC=[0,1,2,3].filter(k=>+$('#cs'+k).value>0).map(k=>CN[k].toLowerCase()),lowE=[0,1,2,3].filter(k=>+$('#es'+k).value>0).map(k=>EN[k].toLowerCase());
+  if(lowC.length)dr.push('Corner wear: '+lowC.join(', ')+'.');if(lowE.length)dr.push('Edge wear: '+lowE.join(', ')+'.');
+  if(+$('#surfsel').value>0)dr.push('Surface flaws noted.');
+  $('#drivers').innerHTML=dr.map(t=>'<li>'+t+'</li>').join('');
+  const raw=parseFloat($('#vRaw').value),vals=IDS.map(i=>parseFloat($('#'+i).value));if(isNaN(vals[3]))vals[3]=raw;
+  const fee=parseFloat($('#fee').value)||0,ship=parseFloat($('#ship').value)||0;let html='';R.roi=null;
+  if(isNaN(raw)||vals.some(v=>isNaN(v))){html=`<div style="color:var(--mute)">Enter your raw value and ${selCo} graded values in the Value step to see expected value and ROI for ${selCo}.</div><button class="btn ghost sm" id="editvals" style="margin-top:8px">Edit ${selCo} values</button>`}
+  else{
+    const th=C.tiers,val=g=>g>=th[0]?vals[0]:g>=th[1]?vals[1]:g>=th[2]?vals[2]:vals[3];
+    const ev=R.p.reduce((a,p,i)=>a+p*val(C.ladder[i].g),0),cost=raw+fee+ship,net=ev-cost,roi=net/cost*100;
+    const verdict=net>0&&roi>=25?['good','Worth grading']:net>0?['mid','Marginal']:['skip','Probably skip'];
+    R.roi={ev,net,roi,verdict:verdict[1]};
+    html=`<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px"><span class="pill ${verdict[0]}">${verdict[1]}</span><span style="color:var(--mute);font-size:13px">with ${selCo}, based on estimated grade odds</span></div>
+    <div class="grid4"><div class="rd"><small>Expected graded value</small><span class="v">${fmt(ev)}</span></div><div class="rd"><small>Total cost (raw + fees)</small><span class="v">${fmt(cost)}</span></div><div class="rd"><small>Expected profit</small><span class="v" style="color:${net>=0?'var(--ok)':'var(--bad)'}">${net>=0?'+':'−'}${fmt(Math.abs(net))}</span></div><div class="rd"><small>Expected ROI</small><span class="v" style="color:${net>=0?'var(--ok)':'var(--bad)'}">${Math.round(roi)}%</span></div></div>
+    <div class="note">Expected value = Σ (grade probability × graded value). Ignores turnaround time, resale fees and price movement.</div>`;
+  }
+  $('#roi').innerHTML=html;{const ev=$('#editvals');if(ev)ev.onclick=()=>goStep(5)}
+}
+function summary(){
+  if(!ALL)return '';const nm=$('#name').value.trim()||'Untitled card';
+  let t=nm+'\n'+Object.keys(CO).map(co=>CO[co].lab(ALL[co].g)+' ('+Math.round(ALL[co].top*100)+'% top-grade odds)').join('\n');
+  const R=ALL[selCo];if(R.roi)t+=`\n${selCo} ROI: ${R.roi.net>=0?'+':'-'}$${Math.abs(R.roi.net).toFixed(2)} expected profit (${Math.round(R.roi.roi)}%): ${R.roi.verdict}`;return t;
+}
+loadVals();
+$('#copy').onclick=async()=>{try{await navigator.clipboard.writeText(summary());$('#msg').textContent='Copied.'}catch(e){$('#msg').textContent='Copy blocked here. Select the text manually.'}};
+const KEY='slabcheck.reports';
+function getRep(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return []}}
+$('#save').onclick=()=>{
+  if(!ALL)return;const r=getRep();
+  r.unshift({name:$('#name').value.trim()||'Untitled card',date:new Date().toLocaleDateString(),text:summary()});
+  try{localStorage.setItem(KEY,JSON.stringify(r.slice(0,100)));$('#msg').textContent='Saved to My Reports.'}catch(e){$('#msg').textContent="Saving isn't available in this view."}
+};
+function renderReps(){
+  const r=getRep(),el=$('#replist');
+  if(!r.length){el.innerHTML='<div style="color:var(--mute)">No saved reports yet.</div>';return}
+  el.innerHTML=r.map((x,i)=>`<div class="rep"><div><b>${x.name.replace(/</g,'&lt;')}</b><div class="note" style="white-space:pre-line">${x.date}\n${(x.text||'').split('\n').slice(1).join('\n').replace(/</g,'&lt;')}</div></div><button class="btn ghost sm" data-i="${i}">Delete</button></div>`).join('');
+  el.querySelectorAll('button').forEach(b=>b.onclick=()=>{const a=getRep();a.splice(+b.dataset.i,1);try{localStorage.setItem(KEY,JSON.stringify(a))}catch(e){}renderReps()});
+}
+function nav(which){$('#pg').hidden=which!=='pg';$('#rp').hidden=which!=='rp';$('#nav-check').classList.toggle('on',which==='pg');$('#nav-reports').classList.toggle('on',which==='rp');if(which==='rp')renderReps()}
+$('#nav-check').onclick=()=>nav('pg');$('#nav-reports').onclick=()=>nav('rp');
+updateNav();
+window.__sc={sides,calc,all:()=>ALL,show:goStep,go:goStep};
+})();
+</script>
+</body>
+</html>
