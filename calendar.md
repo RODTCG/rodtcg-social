@@ -58,3 +58,6 @@ Metricool still has only the Oct 21 (Clefairy, id 399090658, [DO NOT APPROVE YET
 
 ## Run Nov 2
 Metricool still has only the Oct 21 (Clefairy, id 399090658, [DO NOT APPROVE YET], past its slot: delete it) and Oct 23 (Mew ex) drafts; nothing for Nov 2 or Nov 4. cards.json fetch blocked a thirteenth time (permission unanswered), so no listings could be verified and no drafts were made. Needs: allow WebFetch for ebay.com and raw.githubusercontent.com/RODTCG/rod-shop, or send current listings (name, number, price).
+
+## Run Nov 3
+Metricool has no posts for Nov 3-10 (no drafts for Nov 4 or Nov 6). cards.json fetch blocked a fourteenth time (permission unanswered), so no listings could be verified and no drafts were made. Oct 21 Clefairy draft (id 399090658) may still carry the marker: delete it in Metricool. Needs: allow WebFetch for ebay.com and raw.githubusercontent.com/RODTCG/rod-shop, or send current listings (name, number, price).
