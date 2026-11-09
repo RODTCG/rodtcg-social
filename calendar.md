@@ -76,3 +76,6 @@ Metricool has no posts for Nov 7-14 (no drafts for Nov 8 or Nov 10). cards.json 
 
 ## Run Nov 8
 Metricool has no posts for Nov 8-15 (no drafts for Nov 8 or Nov 10). cards.json fetch blocked a nineteenth time (permission unanswered), so no listings could be verified and no drafts were made. Oct 21 Clefairy draft (id 399090658) may still carry the marker: delete it in Metricool. Needs: allow WebFetch for ebay.com and raw.githubusercontent.com/RODTCG/rod-shop, or send current listings (name, number, price).
+
+## Run Nov 9
+Metricool has no posts for Nov 9-16 (no drafts for Nov 10 or Nov 12). cards.json fetch blocked a twentieth time (permission unanswered), so no listings could be verified and no drafts were made. Oct 21 Clefairy draft (id 399090658) may still carry the marker: delete it in Metricool. Needs: allow WebFetch for ebay.com and raw.githubusercontent.com/RODTCG/rod-shop, or send current listings (name, number, price).
