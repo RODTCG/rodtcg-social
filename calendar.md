@@ -121,3 +121,6 @@ Metricool has no posts for Nov 23-Dec 1 (no drafts for Nov 24 or Nov 26). cards.
 
 ## Run Nov 24
 Metricool has no posts for Nov 24-Dec 2 (no drafts for Nov 24, Nov 26 or Nov 28). cards.json fetch blocked a thirty-fourth time (permission unanswered, PROVENANCE_REQUIRED), so no listings could be verified and no drafts were made. Oct 21 Clefairy draft (id 399090658) may still carry the marker: delete it in Metricool. Needs: allow WebFetch for ebay.com and raw.githubusercontent.com/RODTCG/rod-shop, or send current listings (name, number, price).
+
+## Run Nov 25
+Metricool has no posts for Nov 25-Dec 3 (no drafts for Nov 26 or Nov 28). cards.json fetch blocked a thirty-fifth time (permission unanswered, PROVENANCE_REQUIRED), so no listings could be verified and no drafts were made. Oct 21 Clefairy draft (id 399090658) may still carry the marker: delete it in Metricool. Needs: allow WebFetch for ebay.com and raw.githubusercontent.com/RODTCG/rod-shop, or send current listings (name, number, price).
