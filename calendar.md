@@ -124,3 +124,6 @@ Metricool has no posts for Nov 24-Dec 2 (no drafts for Nov 24, Nov 26 or Nov 28)
 
 ## Run Nov 25
 Metricool has no posts for Nov 25-Dec 3 (no drafts for Nov 26 or Nov 28). cards.json fetch blocked a thirty-fifth time (permission unanswered, PROVENANCE_REQUIRED), so no listings could be verified and no drafts were made. Oct 21 Clefairy draft (id 399090658) may still carry the marker: delete it in Metricool. Needs: allow WebFetch for ebay.com and raw.githubusercontent.com/RODTCG/rod-shop, or send current listings (name, number, price).
+
+## Run Nov 26 (7:50 AM ET)
+Market draft made for Nov 26 10:00: Mew ex FR 158/128 (Metricool id 443080388, uuid -3077185285643483067), image posts/2026-11/nov26_mew_chart.png, DRAFT awaiting approval. Trackers checked Nov 26: PriceCharting $29.51, TCGIndex $29.51 headline / $31.95 history table, PokemonWizard $30.93 (TCG Stacked $26.83 is dated Nov 14, left out). cards.json fetch blocked again (PROVENANCE_REQUIRED), so no listing drafts; nothing yet for Nov 28. Old drafts past their slots, delete in Metricool: Oct 21 Clefairy (399090658, still marked DO NOT APPROVE) and Oct 23 Mew ex (404100388, superseded). Needs: allow WebFetch for raw.githubusercontent.com/RODTCG/rod-shop and ebay.com, or send current listings (name, number, price).
